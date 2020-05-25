@@ -2388,7 +2388,7 @@ public class DBServices
                 string month = tempdate.Split('/')[1];
                 string year = tempdate.Split('/')[2];
                 reAv.Date = temp;
-                reAv.Date2 = new DateTime(Int32.Parse(year), Int32.Parse(month), Int32.Parse(day));
+                //reAv.Date2 = new DateTime(Int32.Parse(year), Int32.Parse(month), Int32.Parse(day));
 
 
                 allav.Add(reAv.StartTime + "-" + reAv.EndTime);
@@ -2474,7 +2474,7 @@ public class DBServices
                 string month = temp2.Split('/')[1];
                 string year = temp2.Split('/')[2];
                 reAv.Date = temp;
-                reAv.Date2 = new DateTime(Int32.Parse(year), Int32.Parse(month), Int32.Parse(day));
+                //reAv.Date2 = new DateTime(Int32.Parse(year), Int32.Parse(month), Int32.Parse(day));
 
                 ra.Add(reAv);
             }
