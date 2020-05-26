@@ -16,7 +16,7 @@ namespace SpazioServer.Models
         Space space;
         Facility facility;
         Equipment[] equipment;
-        //Availability availability;
+        WeekAvailability[] availability;
         List<string> realavailability;
         List<Order> orders;
         List<WeekAvailability> weekAvailabilities;
@@ -25,7 +25,7 @@ namespace SpazioServer.Models
 
         public SpaceData() { }
 
-        public SpaceData(Space space, Facility facility, Equipment[] equipment, List<string> realavailability, List<Order> orders, List<WeekAvailability> weekAvailabilities)
+        public SpaceData(Space space, Facility facility, Equipment[] equipment, List<string> realavailability, List<Order> orders, List<WeekAvailability> weekAvailabilities, WeekAvailability[] availability)
         {
             this.space = space;
             this.facility = facility;
@@ -33,6 +33,7 @@ namespace SpazioServer.Models
             this.realavailability = realavailability;
             this.orders = orders;
             this.weekAvailabilities = weekAvailabilities;
+            this.availability = availability;
         }
 
         public Space Space { get => space; set => space = value; }
@@ -41,5 +42,6 @@ namespace SpazioServer.Models
         public List<string> Realavailability { get => realavailability; set => realavailability = value; }
         public List<Order> Orders { get => orders; set => orders = value; }
         public List<WeekAvailability> WeekAvailabilities { get => weekAvailabilities; set => weekAvailabilities = value; }
+        public WeekAvailability[] Availability { get => availability; set => availability = value; }
     }
 }

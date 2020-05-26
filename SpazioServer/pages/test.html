@@ -32,14 +32,14 @@
     "StartHour": "19:00",
     "UserId": "4"
 };
-                       ajaxCall("POST", "../api/order", JSON.stringify(order), getSuccessCB, getErrorCB);
+                       //ajaxCall("POST", "../api/order", JSON.stringify(order), getSuccessCB, getErrorCB);
 
         var spaceid = 6;
         var date = "20/05/2020";
         var querystring2 = "spaceid=" + spaceid + "&date=" + date;
 
-                
-        
+
+
         var querystring3= "field=" + field + "&city=" + city + "&street=" + street + "&number=" + number + "&date=" + date;
 
                 var emptyquerystring3= "field=&city=&street=&number=&date=" + date;
@@ -59,6 +59,11 @@
         var spaceid = "spaceid=6";
 
 
+                                               
+        ajaxCall("GET", "../api/SpaceData/?" + emptyquerystring3, "", getSuccessCB, getErrorCB);
+                                                      
+        ajaxCall("GET", "../api/SpaceData/LastAddedSpaces", "", getSuccessCBLastAddedSpaces, getErrorCBLastAddedSpaces);
+
                                //ajaxCall("GET", "../api/RealAvailability/?" + querystring2, "", getSuccessCB, getErrorCB);
 
 
@@ -68,17 +73,132 @@
 
                  //ajaxCall("GET", "../api/SpaceData/?" + querystringMySpaces, "", getSuccessCB, getErrorCB);
 
-                    
-       
+
+
         //ajaxCall("GET", "../api/order/?spaceid=6" , "", getSuccessCB, getErrorCB);
 
+        var SpaceData3 = {availability:[{Day:"Sunday",EndTime:"20:00", StartTime:"22:00", FkSpaceId:"", Times:"500-600"},{Day:"Friday",EndTime:"18:00", StartTime:"23:00", FkSpaceId:"", Times:"300-900"}]};
 
+        var availability = [{Day:"Sunday",EndTime:"20:00", StartTime:"22:00", FkSpaceId:"", Times:"500-600"},{Day:"Friday",EndTime:"18:00", StartTime:"23:00", FkSpaceId:"", Times:"300-900"}];
 
         console.log("test");
 
 
         console.log("test");
 
+         var facility = 
+        {
+                        parking : "true",
+                        toilet :"false",
+                        kitchen : "true",
+                        intercom :"false",
+                        accessible : "true",
+                        airCondition :"false",
+                        wifi : "true",
+                        spaceId :"false"   
+        };
+
+        var availability2 = 
+        {
+		"Friday": "00:00-03:00",
+		"Monday": "10:00-19:00",
+		"Saturday": "14:30-16:30",
+		"Sunday": "09:00-12:00",
+		"Thursday": "06:00-09:00",
+		"Tuesday": "11:00-14:00",
+		"Wednesday": "11:00-13:00"
+        };
+
+        var equipment = [
+        {
+		"Id": "9",
+		"Name": "Drum",
+		"SpaceId": "8"
+    },
+        {
+		"Id": "10",
+		"Name": "Guitar",
+		"SpaceId": "7"
+    }];
+
+        var space = {
+		"AccountNumber": "02981694",
+		"Bank": "Leumi",
+		"Branch": "574",
+		"Capabillity": "12",
+		"City": "Haifa",
+		"Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+		"Field": "Beauty",
+		"Imageurl1": "https://media-cdn.tripadvisor.com/media/photo-s/15/4c/8c/72/gett-s-hair-studio-salon.jpg",
+		"Imageurl2": "https://media-cdn.tripadvisor.com/media/photo-m/1280/14/ff/61/25/getlstd-property-photo.jpg",
+		"Imageurl3": "https://i.pinimg.com/originals/f2/6e/31/f26e31804ed5324bb444b7233491abaa.jpg",
+		"Imageurl4": "https://i.pinimg.com/originals/b8/5a/40/b85a409cd599f522155a381b38b8875e.jpg",
+		"Imageurl5": "",
+		"Name": "Zaki Hair Salon",
+		"Number": "15",
+		"Price": "85.34",
+		"Rank": "3",
+		"Street": "Herzel",
+		"TermsOfUse": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+		"Uploadtime": "3/20/2020 12:00:00 AM",
+		"UserEmail": "al@gmail.com"
+	};
+
+        var spacedata2 = {
+        space : 
+        {
+                "AccountNumber": "02981694",
+                "Bank": "Leumi",
+                "Branch": "574",
+                "Capabillity": "12",
+                "City": "Haifa",
+                "Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "Field": "Beauty",
+                "Imageurl1": "https://media-cdn.tripadvisor.com/media/photo-s/15/4c/8c/72/gett-s-hair-studio-salon.jpg",
+                "Imageurl2": "https://media-cdn.tripadvisor.com/media/photo-m/1280/14/ff/61/25/getlstd-property-photo.jpg",
+                "Imageurl3": "https://i.pinimg.com/originals/f2/6e/31/f26e31804ed5324bb444b7233491abaa.jpg",
+                "Imageurl4": "https://i.pinimg.com/originals/b8/5a/40/b85a409cd599f522155a381b38b8875e.jpg",
+                "Imageurl5": "",
+                "Name": "Zaki Hair Salon",
+                "Number": "15",
+                "Price": "85.34",
+                "Rank": "3",
+                "Street": "Herzel",
+                "TermsOfUse": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "Uploadtime": "3/20/2020 12:00:00 AM",
+                "UserEmail": "al@gmail.com"
+            },
+            facility :
+        {
+            parking : "true",
+            toilet :"false",
+            kitchen : "true",
+            intercom :"false",
+            accessible : "true",
+            airCondition :"false",
+            wifi : "true",
+            spaceId :"false"
+        },
+            availability :
+        {
+            "Friday": "00:00-03:00",
+            "Monday": "10:00-19:00",
+            "Saturday": "14:30-16:30",
+            "Sunday": "09:00-12:00",
+            "Thursday": "06:00-09:00",
+            "Tuesday": "11:00-14:00",
+            "Wednesday": "11:00-13:00"
+            },
+            equipment :
+        {
+            "Id": "9",
+            "Name": "Drum",
+            "SpaceId": "8"
+        }};
+
+        var spacedata = {space, facility, equipment, availability};
+
+                //ajaxCall("POST", "../api/spacedata", JSON.stringify(spacedata) , getSuccessCB, getErrorCB);
 
 
         function getSuccessCB(data) {
@@ -87,6 +207,16 @@
         }
 
          function getErrorCB(error) {
+            console.log(error);
+
+        }
+
+        function getSuccessCBLastAddedSpaces(data) {
+            console.log(data);
+
+        }
+
+         function getErrorCBLastAddedSpaces(error) {
             console.log(error);
 
         }

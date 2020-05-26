@@ -38,6 +38,9 @@ namespace SpazioServer.Controllers
             return ra.getAllAvailbilities(spaceid, date);
         }
 
+
+
+
         // POST api/<controller>
 
 

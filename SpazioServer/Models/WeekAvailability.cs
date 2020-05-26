@@ -16,11 +16,11 @@ namespace SpazioServer.Models
 
         public WeekAvailability(int id, string day, string startTime, string endTime, int fkSpaceId)
         {
-            this.Id = id;
+            this.id = id;
             this.day = day;
-            this.StartTime = startTime;
-            this.EndTime = endTime;
-            this.FkSpaceId = fkSpaceId;
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.fkSpaceId = fkSpaceId;
         }
 
         public int Id { get => id; set => id = value; }

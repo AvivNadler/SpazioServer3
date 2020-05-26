@@ -48,6 +48,40 @@ namespace SpazioServer.Controllers
             return list;
         }
 
+        [HttpGet]
+        [Route("api/SpaceData/LastAddedSpaces")]
+
+        public List<SpaceData> Get()
+        {
+            List<SpaceData> list = new List<SpaceData>();
+            DBServices dbs = new DBServices();
+            foreach (Space item in dbs.readLastAddedSpaces())
+            {
+                
+                    SpaceData s = new SpaceData();
+                    s.Space = item;
+                    //s.Realavailability = dbs.readAllAvailbilities(s.Space.Id, date);
+                    s.Facility = dbs.readFacilities(s.Space.Id);
+                    s.Equipment = dbs.readEquipments(s.Space.Id).ToArray();
+                    s.Orders = dbs.readOrdersOfSpace(s.Space.Id);
+                    s.WeekAvailabilities = dbs.readWeekAvailbilitiesById(s.Space.Id);
+
+                    //List<string> tempAvail = new List<string>();
+                    //foreach (string item2 in dbs.readAllAvailbilities(s.Space.Id, date))
+                    //{
+                    //    tempAvail.Add(item2.Split('-')[0].Split(':')[0] + ":" + item2.Split('-')[0].Split(':')[1] + "-" + item2.Split('-')[1].Split(':')[0] + ":" + item2.Split('-')[1].Split(':')[1]);
+                    //}
+                    //s.Realavailability = tempAvail;
+
+                    list.Add(s);
+
+                
+
+            }
+            return list;
+        }
+
+
         public List<SpaceData> Get(int userId)
         {
             
@@ -126,6 +160,7 @@ namespace SpazioServer.Controllers
             Space s = spaceData.Space;
             Facility f = spaceData.Facility;
             Equipment[] e = spaceData.Equipment;
+            WeekAvailability[] wa = spaceData.Availability;
             //Availability a = spaceData.Availability;
 
             DBServices dbs = new DBServices();
@@ -134,13 +169,6 @@ namespace SpazioServer.Controllers
             int newSpaceId = dbs.insert(s);
 
             f.SpaceId = newSpaceId;
-            foreach (Equipment item in e)
-            {
-                item.SpaceId = newSpaceId;
-            }
-            //e.SpaceId = newSpaceId;
-            //a.SpaceId = newSpaceId;
-            userType = dbs.userTypeCheckandUpdate(s.UserEmail);
 
             //  countertest variabe for test how many rows affected 
             int countertest = 0;
@@ -148,9 +176,22 @@ namespace SpazioServer.Controllers
 
             foreach (Equipment item in e)
             {
+                item.SpaceId = newSpaceId;
                 countertest += dbs.insert(item);
+                //dbs.insert(item); test if it can replace the row above??
             }
-            
+            foreach (WeekAvailability item in wa)
+            {
+                item.FkSpaceId = newSpaceId;
+                countertest += dbs.insert(item);
+
+            }
+
+            //test if the user is already a spaceOwner
+            userType = dbs.userTypeCheckandUpdate(s.UserEmail);
+
+            //e.SpaceId = newSpaceId;
+            //a.SpaceId = newSpaceId;
             //countertest += dbs.insert(a);
 
             return spaceData;

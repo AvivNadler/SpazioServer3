@@ -538,6 +538,67 @@ public class DBServices
         }
         return Spaces;
     }
+    public List<Space> readLastAddedSpaces()
+    {
+        List<Space> Spaces = new List<Space>();
+        SqlConnection con = null;
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        try
+        {
+            string selectSTR = "SELECT TOP 5 * FROM [dbo].[Spaces_2020] Order by UploadDate Desc; ";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Space s = new Space();
+
+                s.Id = Convert.ToInt32(dr["SpaceId"]);
+                s.Name = (string)dr["SpaceName"];
+                s.Field = (string)dr["Field"];
+                s.Price = Convert.ToDouble(dr["Price"]);
+                s.City = (string)dr["City"];
+                s.Street = (string)dr["Street"];
+                s.Number = (string)dr["Number"];
+                s.Capabillity = Convert.ToInt32(dr["Capabillity"]);
+                s.Bank = (string)dr["Bank"];
+                s.Branch = (string)dr["Branch"];
+                s.AccountNumber = (string)dr["AccountNumber"];
+                s.Imageurl1 = (string)dr["Image1"];
+                s.Imageurl2 = (string)dr["Image2"];
+                s.Imageurl3 = (string)dr["Image3"];
+                s.Imageurl4 = (string)dr["Image4"];
+                s.Imageurl5 = (string)dr["Image5"];
+                s.UserEmail = (string)dr["FKEmail"];
+                s.Description = (string)dr["Description"];
+                s.TermsOfUse = (string)dr["TermsOfUse"];
+                s.Rank = Convert.ToDouble(dr["Rank"]);
+                s.Uploadtime = dr["UploadDate"].ToString();
+
+                Spaces.Add(s);
+            }
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+        return Spaces;
+    }
     public List<Space> readMySpaces(string userEmail)
     {
         List<Space> Spaces = new List<Space>();
@@ -2348,14 +2409,21 @@ public class DBServices
 
         SqlConnection con = null;
         DateTime date2 = new DateTime();
-        if(date!=null && date!="")
+        string format2 = "yyyy-MM-dd";
+        string searchDate;
+
+        if (date!=null && date!="")
         {
             date2 = new DateTime(Convert.ToInt32(date.Split('/')[2]), Convert.ToInt32(date.Split('/')[1]), Convert.ToInt32(date.Split('/')[0]));
-
+            searchDate = date2.ToString(format2);
         }
-        
-        string format2 = "yyyy-MM-dd";
-        
+        else
+        {
+            DateTime now = DateTime.Now;
+            searchDate = now.ToString(format2);
+        }
+
+       
         try
         {
             con = connect("database");
@@ -2366,7 +2434,8 @@ public class DBServices
         }
         try
         {
-            string selectSTR = "SELECT * FROM RealAvailability_2020 WHERE FkSpaceId=" + spaceId.ToString() + " AND AvailabilityDate='" + date2.ToString(format2) + "'";
+             
+            string selectSTR = "SELECT * FROM RealAvailability_2020 WHERE FkSpaceId=" + spaceId.ToString() + " AND AvailabilityDate='" + searchDate + "'";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
             while (dr.Read())
@@ -2942,8 +3011,8 @@ public class DBServices
         StringBuilder sb = new StringBuilder();
 
         // use a string builder to create the dynamic string
-        sb.AppendFormat("Values({0}, '{1}', '{2}', '{3}', {4})", wa.Id.ToString(), wa.Day, wa.StartTime, wa.EndTime, wa.FkSpaceId.ToString());
-        String prefix = "INSERT INTO WeekAvailablity_2020 " + "([Id], [Day], [StartTime], [EndTime], [FkSpaceId]) ";
+        sb.AppendFormat("Values('{0}', '{1}', '{2}', {3})", wa.Day, wa.StartTime, wa.EndTime, wa.FkSpaceId.ToString());
+        String prefix = "INSERT INTO WeekAvailablity_2020 " + "([Day], [StartTime], [EndTime], [FkSpaceId]) ";
         command = prefix + sb.ToString();
 
         return command;
@@ -2952,7 +3021,7 @@ public class DBServices
     public int insert(WeekAvailability wa)
     {
 
-        SqlConnection con;
+        SqlConnection con = null ;
         SqlCommand cmd;
 
         try
