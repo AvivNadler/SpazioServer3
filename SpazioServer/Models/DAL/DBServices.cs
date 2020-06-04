@@ -113,8 +113,8 @@ public class DBServices
         string format = "yyyy-MM-dd HH:mm:ss";
         DateTime time = DateTime.Now;
 
-        sb.AppendFormat("Values('{0}', '{1}' ,'{2}', '{3}','{4}','{5}',{6},{7},'{8}')", user.Email, user.Password, user.UserName, user.PhoneNumber, user.Photo, user.SpaceOwner, user.Visits, user.Rank, time.ToString(format));
-        String prefix = "INSERT INTO Users_2020" + "(Email,Password,UserName,PhoneNumber,Photo,SpaceOwner,visits,rank,RegisterationDate) ";
+        sb.AppendFormat("Values('{0}', '{1}' ,'{2}', '{3}','{4}','{5}',{6},{7},'{8}','{9}','{10}')", user.Email, user.Password, user.UserName, user.PhoneNumber, user.Photo, user.SpaceOwner, user.Visits, user.Rank, time.ToString(format),user.SpacePublish,user.Premium);
+        String prefix = "INSERT INTO Users_2020" + "(Email,Password,UserName,PhoneNumber,Photo,SpaceOwner,visits,rank,RegisterationDate,SpacePublish,Premium) ";
         command = prefix + sb.ToString();
 
         return command;
@@ -153,6 +153,58 @@ public class DBServices
                 u.Visits = Convert.ToInt32(dr["visits"]);
                 u.Rank = Convert.ToDouble(dr["rank"]);
                 u.RegistrationDate = dr["RegisterationDate"].ToString();
+                u.SpacePublish = dr["SpacePublish"].ToString(); 
+                u.Premium = Convert.ToBoolean(dr["Premium"]);
+            }
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+        return u;
+    }
+    public User readUser(string email)
+    {
+        User u = new User();
+        SqlConnection con = null;
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        try
+        {
+            string selectSTR = "SELECT * FROM Users_2020 Where Email='" + email + "'";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+
+
+                u.Id = Convert.ToInt32(dr["Id"]);
+                u.Email = (string)dr["Email"];
+                u.Password = (string)dr["Password"];
+                u.UserName = (string)dr["UserName"];
+                u.PhoneNumber = (string)dr["PhoneNumber"];
+                u.Photo = (string)dr["Photo"];
+                u.SpaceOwner = Convert.ToBoolean(dr["SpaceOwner"]);
+                u.Visits = Convert.ToInt32(dr["visits"]);
+                u.Rank = Convert.ToDouble(dr["rank"]);
+                u.RegistrationDate = dr["RegisterationDate"].ToString();
+                u.SpacePublish = dr["SpacePublish"].ToString();
+                u.Premium = Convert.ToBoolean(dr["Premium"]);
             }
         }
         catch (Exception ex)
@@ -264,7 +316,139 @@ public class DBServices
                 con.Close();
         }
     }
+    
+    public int updateUserDetails(User user)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
 
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+
+        String command;
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("SET Email='{0}',Password='{1}',UserName='{2}',PhoneNumber='{3}',Photo='{4}',SpaceOwner='{5}',visits={6},rank={7} WHERE Id={8}", user.Email, user.Password, user.UserName, user.PhoneNumber, user.Photo, user.SpaceOwner, user.Visits, user.Rank, user.Id.ToString());
+        String prefix = "UPDATE Users_2020 ";
+        command = prefix + sb.ToString();
+
+        // cmd = CreatCommmand(cStr, con);
+        cmd = CreateCommand(command, con);
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery();
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+                con.Close();
+        }
+    }
+    public int updateUserSpacePubish(string userEmail)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+        string format = "yyyy-MM-dd HH:mm:ss";
+        string format2 = "yyyy-MM-dd";
+        DateTime publishDate = DateTime.Now;
+
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+
+        String command;
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("SET SpacePublish='{0} WHERE Email='{1}' AND SpacePublish='0001-01-01'",  publishDate.ToString(format2), userEmail);
+        String prefix = "UPDATE Users_2020 ";
+        command = prefix + sb.ToString();
+
+        // cmd = CreatCommmand(cStr, con);
+        cmd = CreateCommand(command, con);
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery();
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+                con.Close();
+        }
+    }
+    public int updateUserStatus(int id)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+        string format = "yyyy-MM-dd HH:mm:ss";
+        string format2 = "yyyy-MM-dd";
+        DateTime publishDate = DateTime.Now;
+
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+
+        String command;
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Set Premium = 'true' Where Id={0}",  id.ToString());
+        String prefix = "UPDATE Users_2020 ";
+        command = prefix + sb.ToString();
+
+        // cmd = CreatCommmand(cStr, con);
+        cmd = CreateCommand(command, con);
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery();
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+                con.Close();
+        }
+    }
 
     public List<User> readUsers()
     {
@@ -297,6 +481,8 @@ public class DBServices
                 u.Visits = Convert.ToInt32(dr["visits"]);
                 u.Rank = Convert.ToDouble(dr["rank"]);
                 u.RegistrationDate = dr["RegisterationDate"].ToString();
+                u.SpacePublish = dr["SpacePublish"].ToString();
+                u.Premium = Convert.ToBoolean(dr["Premium"]);
 
                 Users.Add(u);
             }
@@ -452,7 +638,9 @@ public class DBServices
                 u.SpaceOwner = Convert.ToBoolean(dr["SpaceOwner"]);
                 u.Visits = Convert.ToInt32(dr["visits"]);
                 u.Rank = Convert.ToDouble(dr["rank"]);
-                u.RegistrationDate = (string)dr["RegistrationDate"];
+                u.RegistrationDate = dr["RegistrationDate"].ToString();
+                u.SpacePublish = dr["SpacePublish"].ToString();
+                u.Premium = Convert.ToBoolean(dr["Premium"]);
 
                 Users.Add(u);
             }
@@ -552,7 +740,7 @@ public class DBServices
         }
         try
         {
-            string selectSTR = "SELECT TOP 5 * FROM [dbo].[Spaces_2020] Order by UploadDate Desc; ";
+            string selectSTR = "SELECT TOP 5 SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate,AVG(Ratings_2020.TotalRating) as Rank FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId group by SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate Order by UploadDate Desc";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
             while (dr.Read())
@@ -578,7 +766,14 @@ public class DBServices
                 s.UserEmail = (string)dr["FKEmail"];
                 s.Description = (string)dr["Description"];
                 s.TermsOfUse = (string)dr["TermsOfUse"];
-                s.Rank = Convert.ToDouble(dr["Rank"]);
+                if (dr["Rank"] == DBNull.Value)
+                { //in case there is not ratings to space yet
+                    s.Rank = 3.499;
+                }
+                else
+                {
+                    s.Rank = Convert.ToDouble(dr["Rank"]);
+                }
                 s.Uploadtime = dr["UploadDate"].ToString();
 
                 Spaces.Add(s);
@@ -613,7 +808,8 @@ public class DBServices
         }
         try
         {
-            string selectSTR = "SELECT * FROM Spaces_2020 Where FKEmail='" + userEmail + "'";
+
+            string selectSTR = "SELECT SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId Where FKEmail = '" + userEmail + "' group by SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate Order by UploadDate Desc";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
             while (dr.Read())
@@ -687,8 +883,9 @@ public class DBServices
             StringBuilder sb = new StringBuilder();
             // use a string builder to create the dynamic string
             string command;
-            sb.AppendFormat("WHERE SpaceId={0}", id.ToString());
-            String prefix = "SELECT * FROM Spaces_2020 ";
+            sb.AppendFormat("WHERE SpaceId={0} Order by UploadDate Desc", id.ToString());
+            String prefix = "SELECT TOP 5 SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate,AVG(Ratings_2020.TotalRating) as Rank FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId group by SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate ";
+
             command = prefix + sb.ToString();
 
             string selectSTR = command;
@@ -717,7 +914,14 @@ public class DBServices
                 s.UserEmail = (string)dr["FKEmail"];
                 s.Description = (string)dr["Description"];
                 s.TermsOfUse = (string)dr["TermsOfUse"];
-                s.Rank = Convert.ToDouble(dr["Rank"]);
+                if (dr["Rank"] == DBNull.Value)
+                { //in case there is not ratings to space yet
+                    s.Rank = 3.499;
+                }
+                else
+                {
+                    s.Rank = Convert.ToDouble(dr["Rank"]);
+                }
                 s.Uploadtime = dr["UploadDate"].ToString();
 
             }
@@ -756,8 +960,8 @@ public class DBServices
             StringBuilder sb = new StringBuilder();
             // use a string builder to create the dynamic string
             string command;
-            sb.AppendFormat("WHERE Field like '{0}' and City like '{1}' and  Street like '{2}'  and  Number like '{3}' Order by Rank DESC, SpaceName ASC", isEmpty(field), isEmpty(city), isEmpty(street), isEmpty(number));
-            String prefix = "SELECT * FROM Spaces_2020 ";
+            sb.AppendFormat("WHERE Field like '{0}' and City like '{1}' and  Street like '{2}'  and  Number like '{3}' group by SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate Order by Rank DESC, SpaceName ASC", isEmpty(field), isEmpty(city), isEmpty(street), isEmpty(number));
+            String prefix = "SELECT SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate,AVG(Ratings_2020.TotalRating) as Rank, UploadDate FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId ";
             command = prefix + sb.ToString();
 
             string selectSTR = command;
@@ -786,7 +990,12 @@ public class DBServices
                 s.UserEmail = (string)dr["FKEmail"];
                 s.Description = (string)dr["Description"];
                 s.TermsOfUse = (string)dr["TermsOfUse"];
+                if (dr["Rank"] == DBNull.Value) { //in case there is not ratings to space yet
+                    s.Rank = 3.499;
+                }
+                else { 
                 s.Rank = Convert.ToDouble(dr["Rank"]);
+                }
                 s.Uploadtime = dr["UploadDate"].ToString();
 
                 Spaces.Add(s);
@@ -943,7 +1152,7 @@ public class DBServices
     private String BuildDeleteSpaceCommand(int id)
     {
         String command;
-        command = "delete from Spaces_2020 where SpaceId = " + id.ToString();
+        command = "delete from Spaces_2020 where SpaceId =" + id.ToString();
         return command;
     }
 
@@ -2005,7 +2214,7 @@ public class DBServices
                 o.StartHour = (string)dr["StartHour"];
                 o.EndHour = (string)dr["EndHour"];
                 o.Price = Convert.ToDouble(dr["Price"]);
-                o.OrderDate = (string)dr["OrderDate"];
+                o.OrderDate = dr["OrderDate"].ToString();
 
             }
         }
@@ -3092,6 +3301,229 @@ public class DBServices
         return this;
 
     }
+
+    public List<Search> readSearches()
+    {
+        List<Search> list = new List<Search>();
+        SqlConnection con = null;
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        try
+        {
+
+            StringBuilder sb = new StringBuilder();
+
+            // use a string builder to create the dynamic string
+            string selectSTR = "SELECT * FROM Searches_2020 ";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Search s = new Search();
+
+                s.Id = Convert.ToInt32(dr["SearchId"]);
+                s.Field = (string)dr["Field"];
+                s.Location = (string)dr["Location"];
+                s.Time = (string)dr["Time"];
+                s.City = (string)dr["City"];
+                s.Street = (string)dr["Street"];
+                s.Number = (string)dr["Number"];
+                s.InputDate = dr["InputDate"].ToString().Split(' ')[0];
+                s.SearchDate = dr["SearchDate"].ToString();
+                s.UserId = Convert.ToInt32(dr["FkUserId"]);
+
+
+                list.Add(s);
+            }
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+        return list;
+    }
+    public int insert(Search s)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        String cStr = BuildInsertCommand(s);
+        // cmd = CreatCommmand(cStr, con);
+        cmd = CreateCommand(cStr, con);
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery();
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+                con.Close();
+        }
+    }
+
+    //--------------------------------------------------------------------
+    // Build the Insert command method String for Users table
+    //--------------------------------------------------------------------
+    private String BuildInsertCommand(Search s)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        string format = "yyyy-MM-dd HH:mm:ss";
+        string format2 = "yyyy-MM-dd";
+        DateTime now = DateTime.Now;
+        DateTime inputdate = new DateTime(Convert.ToInt32(s.InputDate.Split('/')[2]), Convert.ToInt32(s.InputDate.Split('/')[1]), Convert.ToInt32(s.InputDate.Split('/')[0]));
+
+
+        sb.AppendFormat("Values('{0}', '{1}' ,'{2}', '{3}','{4}','{5}','{6}','{7}',{8})", s.Field, s.Location, s.Time, s.City, s.Street, s.Number, inputdate.ToString(format2), now.ToString(format), s.UserId.ToString());
+        String prefix = "INSERT INTO Searches_2020" + "(Field,Location,Time,City,Street,Number,InputDate,SearchDate,FkUserId) ";
+        command = prefix + sb.ToString();
+
+        return command;
+    }
+
+    public int insert(Rating r)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        String cStr = BuildInsertCommand(r);
+        // cmd = CreatCommmand(cStr, con);
+        cmd = CreateCommand(cStr, con);
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery();
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+                con.Close();
+        }
+    }
+
+    //--------------------------------------------------------------------
+    // Build the Insert command method String for Users table
+    //--------------------------------------------------------------------
+    private String BuildInsertCommand(Rating r)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        //string format = "yyyy-MM-dd HH:mm:ss";
+        //double totalrating = (r.Attitude + r.Cleanliness + r.EquipmentQuality + r.FacilityQualiy + r.Authenticity) / 5.0;
+
+        sb.AppendFormat("Values({0}, {1},{2}, {3},{4},{5},{6},{7})", r.Attitude.ToString(), r.Cleanliness.ToString(), r.EquipmentQuality.ToString(), r.FacilityQualiy.ToString(), r.Authenticity.ToString(), r.TotalRating.ToString(), r.FKSpaceId.ToString(), r.FKUserId.ToString());
+        String prefix = "INSERT INTO Ratings_2020" + "(Attitude, Cleanliness, EquipmentQuality, FacilityQualiy, Authenticity, TotalRating,FKSpaceId,FKUserId) ";
+        command = prefix + sb.ToString();
+
+        return command;
+    }
+
+    public List<Rating> readRatings()
+    {
+        List<Rating> list = new List<Rating>();
+        SqlConnection con = null;
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        try
+        {
+
+            StringBuilder sb = new StringBuilder();
+
+            // use a string builder to create the dynamic string
+            string selectSTR = "SELECT * FROM Ratings_2020 ";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Rating r = new Rating();
+
+                r.Id = Convert.ToInt32(dr["Id"]);
+                r.Attitude = Convert.ToInt32(dr["Attitude"]);
+                r.Cleanliness = Convert.ToInt32(dr["Cleanliness"]);
+                r.EquipmentQuality = Convert.ToInt32(dr["EquipmentQuality"]);
+                r.FacilityQualiy = Convert.ToInt32(dr["FacilityQualiy"]);
+                r.Authenticity = Convert.ToInt32(dr["Authenticity"]);
+                r.TotalRating = Convert.ToDouble(dr["TotalRating"]);
+                r.FKSpaceId = Convert.ToInt32(dr["FKSpaceId"]);
+                r.FKUserId = Convert.ToInt32(dr["FKUserId"]); 
+                list.Add(r);
+            }
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+        return list;
+    }
+
+
 
 }
 

@@ -30,7 +30,7 @@ namespace SpazioServer.Controllers
                     //s.Realavailability = dbs.readAllAvailbilities(s.Space.Id, date);
                     s.Facility = dbs.readFacilities(s.Space.Id);
                     s.Equipment = dbs.readEquipments(s.Space.Id).ToArray();
-                    s.Orders = dbs.readOrdersOfSpace(s.Space.Id);
+                    //s.Orders = dbs.readOrdersOfSpace(s.Space.Id);
                     s.WeekAvailabilities = dbs.readWeekAvailbilitiesById(s.Space.Id);
 
                     List<string> tempAvail = new List<string>();
@@ -63,7 +63,7 @@ namespace SpazioServer.Controllers
                     //s.Realavailability = dbs.readAllAvailbilities(s.Space.Id, date);
                     s.Facility = dbs.readFacilities(s.Space.Id);
                     s.Equipment = dbs.readEquipments(s.Space.Id).ToArray();
-                    s.Orders = dbs.readOrdersOfSpace(s.Space.Id);
+                    //s.Orders = dbs.readOrdersOfSpace(s.Space.Id);
                     s.WeekAvailabilities = dbs.readWeekAvailbilitiesById(s.Space.Id);
 
                     //List<string> tempAvail = new List<string>();
@@ -98,7 +98,7 @@ namespace SpazioServer.Controllers
                     //s.Realavailability = dbs.readAllAvailbilities(s.Space.Id, date);
                     s.Facility = dbs.readFacilities(s.Space.Id);
                     s.Equipment = dbs.readEquipments(s.Space.Id).ToArray();
-                    s.Orders = dbs.readOrdersOfSpace(s.Space.Id);
+                    //s.Orders = dbs.readOrdersOfSpace(s.Space.Id);
                     s.WeekAvailabilities = dbs.readWeekAvailbilitiesById(s.Space.Id);
 
                     List<string> tempAvail = new List<string>();
@@ -129,10 +129,12 @@ namespace SpazioServer.Controllers
                     //s.Realavailability = dbs.readAllAvailbilities(s.Space.Id, date);
                     s.Facility = dbs.readFacilities(s.Space.Id);
                     s.Equipment = dbs.readEquipments(s.Space.Id).ToArray();
-                    s.Orders = dbs.readOrdersOfSpace(s.Space.Id);
+                    //s.Orders = dbs.readOrdersOfSpace(s.Space.Id);
                     s.WeekAvailabilities = dbs.readWeekAvailbilitiesById(s.Space.Id);
+                    s.Ordersdata = dbs.readOrdersDataBySpaceId(s.Space.Id);
 
-                    List<string> tempAvail = new List<string>();
+
+                List<string> tempAvail = new List<string>();
                     foreach (string item2 in dbs.readAllAvailbilities(s.Space.Id, today))
                     {
                         tempAvail.Add(item2.Split('-')[0].Split(':')[0] + ":" + item2.Split('-')[0].Split(':')[1] + "-" + item2.Split('-')[1].Split(':')[0] + ":" + item2.Split('-')[1].Split(':')[1]);
@@ -161,12 +163,16 @@ namespace SpazioServer.Controllers
             Facility f = spaceData.Facility;
             Equipment[] e = spaceData.Equipment;
             WeekAvailability[] wa = spaceData.Availability;
+            DBServices dbs = new DBServices();
+
             //Availability a = spaceData.Availability;
 
-            DBServices dbs = new DBServices();
 
 
             int newSpaceId = dbs.insert(s);
+
+            dbs.updateUserSpacePubish(s.UserEmail);
+
 
             f.SpaceId = newSpaceId;
 

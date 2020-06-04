@@ -171,7 +171,9 @@
     <Compile Include="Controllers\FileUploadController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Controllers\RatingController.cs" />
     <Compile Include="Controllers\RealAvailabilityController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\SpaceController.cs" />
     <Compile Include="Controllers\SpaceDataController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -187,9 +189,12 @@
     <Compile Include="Models\Facility.cs" />
     <Compile Include="Models\Favourite.cs" />
     <Compile Include="Models\FieldEq.cs" />
+    <Compile Include="Models\Filter.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderData.cs" />
+    <Compile Include="Models\Rating.cs" />
     <Compile Include="Models\RealAvailability.cs" />
+    <Compile Include="Models\Search.cs" />
     <Compile Include="Models\Space.cs" />
     <Compile Include="Models\SpaceData.cs" />
     <Compile Include="Models\User.cs" />

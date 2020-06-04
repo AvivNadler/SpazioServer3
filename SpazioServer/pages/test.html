@@ -36,6 +36,8 @@
 
         var spaceid = 6;
         var date = "20/05/2020";
+
+
         var querystring2 = "spaceid=" + spaceid + "&date=" + date;
 
 
@@ -60,9 +62,8 @@
 
 
                                                
-        ajaxCall("GET", "../api/SpaceData/?" + emptyquerystring3, "", getSuccessCB, getErrorCB);
-                                                      
-        ajaxCall("GET", "../api/SpaceData/LastAddedSpaces", "", getSuccessCBLastAddedSpaces, getErrorCBLastAddedSpaces);
+       
+
 
                                //ajaxCall("GET", "../api/RealAvailability/?" + querystring2, "", getSuccessCB, getErrorCB);
 
@@ -77,14 +78,12 @@
 
         //ajaxCall("GET", "../api/order/?spaceid=6" , "", getSuccessCB, getErrorCB);
 
+
+
+
         var SpaceData3 = {availability:[{Day:"Sunday",EndTime:"20:00", StartTime:"22:00", FkSpaceId:"", Times:"500-600"},{Day:"Friday",EndTime:"18:00", StartTime:"23:00", FkSpaceId:"", Times:"300-900"}]};
 
         var availability = [{Day:"Sunday",EndTime:"20:00", StartTime:"22:00", FkSpaceId:"", Times:"500-600"},{Day:"Friday",EndTime:"18:00", StartTime:"23:00", FkSpaceId:"", Times:"300-900"}];
-
-        console.log("test");
-
-
-        console.log("test");
 
          var facility = 
         {
@@ -198,8 +197,50 @@
 
         var spacedata = {space, facility, equipment, availability};
 
+
+        var search = {id:"",field:"Art",locationr:"test",time:"",city:"Tel Aviv", street:"Rotschild",number:"16a",inputDate:"26/06/2020",searchDate:"",userId:"6"};
+
+                       //ajaxCall("POST", "../api/Search", JSON.stringify(search) , getSuccessCB, getErrorCB);
+
+                               //ajaxCall("GET", "../api/Search", "" , getSuccessCB, getErrorCB);
+
+
+        
+         var user=  {
+    "email": "zakimaniac3@gmail.com",
+    "Id": "307",
+    "password": "zaki12",
+    "phoneNumber": "054-443-2121",
+    "photo":"",
+    "rank": "0",
+    "registrationDate": "",
+    "spaceOwner": "0",
+    "userName": "Or Zechariaaaaa",
+    "visits": "0",
+
+};
+
+        var rating = {attitude:4,Cleanliness:3,equipmentQuality:2,facilityQualiy:4,authenticity:3,fKSpaceId:7,fKUserId:4}
+         //ajaxCall("PUT", "../api/user/?id="+ user.Id, JSON.stringify(user) , getSuccessCB, getErrorCB);
                 //ajaxCall("POST", "../api/spacedata", JSON.stringify(spacedata) , getSuccessCB, getErrorCB);
 
+        //ajaxCall("POST", "../api/rating", JSON.stringify(rating) , getSuccessCB, getErrorCB);
+
+
+
+        //ajaxCall("PUT", "../api/User/statusupdate/" + user.Id, "" , getSuccessCB, getErrorCB);
+
+        //ajaxCall("GET", "../api/rating", "" , getSuccessCB, getErrorCB);
+
+         //ajaxCall("GET", "../api/SpaceData/?" + emptyquerystring3, "", getSuccessCB, getErrorCB);
+                                                      
+        //ajaxCall("GET", "../api/SpaceData/LastAddedSpaces", "", getSuccessCBLastAddedSpaces, getErrorCBLastAddedSpaces);
+
+        //ajaxCall("DELETE", "../api/space/?id=240", "", getSuccessCBLastAddedSpaces, getErrorCBLastAddedSpaces);
+
+        //ajaxCall("DELETE", "../api/space/?id=222", "", getSuccessCBLastAddedSpaces, getErrorCBLastAddedSpaces);
+
+    
 
         function getSuccessCB(data) {
             console.log(data);

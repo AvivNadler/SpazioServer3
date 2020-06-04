@@ -31,6 +31,12 @@ namespace SpazioServer.Controllers
             return u.getUser(id);
         }
 
+        public User Get(string email)
+        {
+            User u = new User();
+            return u.getUser(email);
+        }
+
         // POST api/<controller>
 
         public User Post([FromBody]User user)
@@ -41,9 +47,23 @@ namespace SpazioServer.Controllers
         }
 
         // PUT api/<controller>/5
-        public void Put(int id, [FromBody]string value)
+        [HttpPut]
+        [Route("api/User/{id?}")]
+        public User Put(int id, [FromBody]User user)
         {
+            user.updateUser();
+            return user;
+
         }
+        [HttpPut]
+        [Route("api/User/statusupdate/{id}")]
+        public int Put(int id)
+        {
+            User u = new User();
+            return u.updateStatus(id); 
+
+        }
+        
 
         // DELETE api/<controller>/5
         public void Delete(int id)

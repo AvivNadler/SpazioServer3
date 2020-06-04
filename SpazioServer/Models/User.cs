@@ -17,6 +17,8 @@ namespace SpazioServer.Models
         int visits;
         double rank;
         string registrationDate;
+        string spacePublish;
+        bool premium;
 
         public int Id { get => id; set => id = value; }
         public string UserName { get => userName; set => userName = value; }
@@ -28,10 +30,12 @@ namespace SpazioServer.Models
         public int Visits { get => visits; set => visits = value; }
         public double Rank { get => rank; set => rank = value; }
         public string RegistrationDate { get => registrationDate; set => registrationDate = value; }
+        public string SpacePublish { get => spacePublish; set => spacePublish = value; }
+        public bool Premium { get => premium; set => premium = value; }
 
         public User() { }
 
-        public User(int id, string userName, string email, string password, string phoneNumber, string photo, bool spaceOwner, int visits, double rank, string registrationDate = null)
+        public User(int id, string userName, string email, string password, string phoneNumber, string photo, bool spaceOwner, int visits, double rank, string registrationDate, string spacePublish, bool premium)
         {
             this.id = id;
             this.userName = userName;
@@ -43,6 +47,8 @@ namespace SpazioServer.Models
             this.visits = visits;
             this.rank = rank;
             this.registrationDate = registrationDate;
+            this.spacePublish = spacePublish;
+            this.premium = premium;
         }
 
         public List<User> getUsers()
@@ -60,6 +66,19 @@ namespace SpazioServer.Models
             DBServices dbs = new DBServices();
             return dbs.readUser(id);
         }
+        public User getUser(string email)
+        {
+            DBServices dbs = new DBServices();
+            return dbs.readUser(email);
+        }
+
+        public int updateStatus(int id)
+        {
+            DBServices dbs = new DBServices();
+            int numAffected = dbs.updateUserStatus(id);
+            return numAffected;
+        }
+        
         public int insert()
         {
             DBServices dbs = new DBServices();
@@ -74,20 +93,20 @@ namespace SpazioServer.Models
             return dbs.readFavouritesSpaces(id);
         }
 
-        /*public int updateUser(int id)
+        public int updateUser()
         {
             DBServices dbs = new DBServices();
-            int numAffected = dbs.updateUser(this);
+            int numAffected = dbs.updateUserDetails(this);
             return numAffected;
-        }*/
+        }
 
         public int deleteUser(int id)
         {
             DBServices dbs = new DBServices();
             int numEffected = dbs.deleteUser(id);
             return numEffected;
-
         }
+
 
     }
 }

@@ -6,38 +6,29 @@ using System.Net.Http;
 using System.Web.Http;
 using SpazioServer.Models;
 
+
 namespace SpazioServer.Controllers
 {
-    public class SpaceController : ApiController
+    public class RatingController : ApiController
     {
         // GET api/<controller>
-        public List<Space> Get()
+        public IEnumerable<Rating> Get()
         {
-            Space s = new Space();
-            return s.getSpaces();
-        }
-
-        [HttpGet]
-        public List<Space> GetBySearch(string field, string city, string street, string number)
-        {
-            Space s = new Space();
-            return s.getSpacesBySearch(field, city, street, number);
+            Rating r = new Rating();
+            return r.getRatings();
         }
 
         // GET api/<controller>/5
-
         public string Get(int id)
         {
             return "value";
         }
 
         // POST api/<controller>
-        public int Post([FromBody]Space space)
+        public Rating Post([FromBody]Rating rating)
         {
-
-            int newSpaceid = space.insert();
-            return newSpaceid;
-
+            rating.insert();
+            return rating;
         }
 
         // PUT api/<controller>/5
@@ -46,12 +37,8 @@ namespace SpazioServer.Controllers
         }
 
         // DELETE api/<controller>/5
-        [HttpDelete]
         public void Delete(int id)
         {
-            Space s = new Space();
-            s.deleteSpace(id);
         }
-
     }
 }
