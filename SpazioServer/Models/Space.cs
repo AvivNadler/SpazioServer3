@@ -27,7 +27,9 @@ namespace SpazioServer.Models
         string description;
         string termsOfUse;
         double rank;
-        string uploadtime; 
+        string uploadtime;
+        int visits;
+        int rankCount;
         
 
         public int Id { get => id; set => id = value; }
@@ -51,8 +53,10 @@ namespace SpazioServer.Models
         public string TermsOfUse { get => termsOfUse; set => termsOfUse = value; }
         public double Rank { get => rank; set => rank = value; }
         public string Uploadtime { get => uploadtime; set => uploadtime = value; }
+        public int Visits { get => visits; set => visits = value; }
+        public int RankCount { get => rankCount; set => rankCount = value; }
 
-        public Space(int id, string name, string field, float price, string city, string street, string number, int capabillity, string bank, string branch, string accountNumber, string imageurl1, string imageurl2, string imageurl3, string imageurl4, string imageurl5, string userEmail, string description, string termsOfUse, double rank, string uploadtime)
+        public Space(int id, string name, string field, float price, string city, string street, string number, int capabillity, string bank, string branch, string accountNumber, string imageurl1, string imageurl2, string imageurl3, string imageurl4, string imageurl5, string userEmail, string description, string termsOfUse, double rank, string uploadtime, int visits, int rankCount)
         {
             this.id = id;
             this.name = name;
@@ -75,6 +79,8 @@ namespace SpazioServer.Models
             this.termsOfUse = termsOfUse;
             this.rank = rank;
             this.uploadtime = uploadtime;
+            this.visits = visits;
+            this.rankCount = rankCount;
         }
         public Space() { }
 

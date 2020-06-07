@@ -46,7 +46,7 @@
 
                 var emptyquerystring3= "field=&city=&street=&number=&date=" + date;
 
-        var userId = 4;
+        var userId = 193;
 
         var querystringFavourite = "userId=" + userId;
 
@@ -62,7 +62,7 @@
 
 
                                                
-       
+        ajaxCall("GET", "../api/User/" , "", getSuccessCB, getErrorCB);
 
 
                                //ajaxCall("GET", "../api/RealAvailability/?" + querystring2, "", getSuccessCB, getErrorCB);
@@ -70,9 +70,8 @@
 
                                        //ajaxCall("GET", "../api/SpaceData/?" + emptyquerystring3, "", getSuccessCB, getErrorCB);
 
-         //ajaxCall("GET", "../api/SpaceData/?" + querystringFavourite, "", getSuccessCB, getErrorCB);
+         ajaxCall("GET", "../api/SpaceData/?" + querystringFavourite, "", getSuccessCB, getErrorCB);
 
-                 //ajaxCall("GET", "../api/SpaceData/?" + querystringMySpaces, "", getSuccessCB, getErrorCB);
 
 
 
@@ -232,13 +231,137 @@
 
         //ajaxCall("GET", "../api/rating", "" , getSuccessCB, getErrorCB);
 
-         //ajaxCall("GET", "../api/SpaceData/?" + emptyquerystring3, "", getSuccessCB, getErrorCB);
+        //ajaxCall("GET", "../api/user", "" , getSuccessCB, getErrorCB);
+
+                         //ajaxCall("GET", "../api/SpaceData/?" + querystringMySpaces, "", getSuccessCB, getErrorCB);
+
+
+
+         ajaxCall("GET", "../api/SpaceData/?" + emptyquerystring3, "", getSuccessCB, getErrorCB);
                                                       
-        //ajaxCall("GET", "../api/SpaceData/LastAddedSpaces", "", getSuccessCBLastAddedSpaces, getErrorCBLastAddedSpaces);
+        ajaxCall("GET", "../api/SpaceData/LastAddedSpaces", "", getSuccessCBLastAddedSpaces, getErrorCBLastAddedSpaces);
 
         //ajaxCall("DELETE", "../api/space/?id=240", "", getSuccessCBLastAddedSpaces, getErrorCBLastAddedSpaces);
 
         //ajaxCall("DELETE", "../api/space/?id=222", "", getSuccessCBLastAddedSpaces, getErrorCBLastAddedSpaces);
+
+
+        var artfilter={id:"",
+field:"Art",
+rating:3,
+minPrice:50,
+ maxPrice:120,
+ maxDistance:30,
+startTime:"20:00",
+endTime:"22:00",
+parking:false,
+toilet:true,
+kitchen:false,
+intercom:true,
+accessible:false,
+airCondition:true,
+wiFi:false,
+canvas:true,
+greenScreen:false,
+pottersWheel:true,
+guitar:false,
+drum:true,
+speaker:false,
+userId:4,
+date:"2020-04-16 21:18:00",
+        minCapacity:2,
+        maxCapacity:6};
+
+
+                var sportfilter={id:"",
+field:"Art",
+rating:3,
+minPrice:50,
+ maxPrice:120,
+ maxDistance:30,
+startTime:"20:00",
+endTime:"22:00",
+parking:false,
+toilet:true,
+kitchen:false,
+intercom:true,
+accessible:false,
+airCondition:true,
+wiFi:false,
+trx:true,
+treadmill:false,
+stationaryBicycle:true,
+bench:false,
+dumbells:true,
+barbell:false,
+userId:4,
+date:"2020-04-16 21:18:00",
+        minCapacity:2,
+        maxCapacity:6};
+
+
+       
+
+                var beautyfilter={id:"",
+field:"Art",
+rating:3,
+minPrice:50,
+ maxPrice:120,
+ maxDistance:30,
+startTime:"20:00",
+endTime:"22:00",
+parking:false,
+toilet:true,
+kitchen:false,
+intercom:true,
+accessible:false,
+airCondition:true,
+wiFi:false,
+dryers:true,
+nailPolishRacks:false,
+receptionAreaSeatingandDecor:true,
+laserHairRemoval:false,
+pedicureManicure:true,
+hairColoringKit:false,
+userId:4,
+date:"2020-04-16 21:18:00",
+        minCapacity:2,
+        maxCapacity:6};
+
+        var spaceVisit = {id:"",spaceId:6, userId:4,visitDate:"2020-04-16 21:18:00"};
+
+                ajaxCall("POST", "../api/spacevisit", JSON.stringify(spaceVisit) , getSuccessCB, getErrorCB);
+
+                        ajaxCall("GET", "../api/spacevisit","", getSuccessCB, getErrorCB);
+
+
+   
+
+        console.log(artfilter);
+
+        console.log(beautyfilter);
+
+        console.log(sportfilter);
+
+        
+
+
+        ajaxCall("POST", "../api/artfilter", JSON.stringify(artfilter) , getSuccessCB, getErrorCB);
+
+                ajaxCall("POST", "../api/beautyfilter", JSON.stringify(beautyfilter) , getSuccessCB, getErrorCB);
+
+                ajaxCall("POST", "../api/sportfilter", JSON.stringify(sportfilter) , getSuccessCB, getErrorCB);
+
+                        ajaxCall("GET", "../api/artfilter","" , getSuccessCB, getErrorCB);
+
+                                ajaxCall("GET", "../api/beautyfilter","" , getSuccessCB, getErrorCB);
+
+                                ajaxCall("GET", "../api/sportfilter","" , getSuccessCB, getErrorCB);
+
+
+
+
+
 
     
 

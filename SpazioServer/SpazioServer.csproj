@@ -162,7 +162,10 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\ArtFilterController.cs" />
     <Compile Include="Controllers\AvailabilityController.cs" />
+    <Compile Include="Controllers\BeautyController.cs" />
+    <Compile Include="Controllers\BeautyFilterController.cs" />
     <Compile Include="Controllers\CountriesController.cs" />
     <Compile Include="Controllers\EquipmentController.cs" />
     <Compile Include="Controllers\FacilitiesController.cs" />
@@ -176,13 +179,17 @@
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\SpaceController.cs" />
     <Compile Include="Controllers\SpaceDataController.cs" />
+    <Compile Include="Controllers\SpaceVisitController.cs" />
+    <Compile Include="Controllers\SportFilterController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Admin.cs" />
+    <Compile Include="Models\ArtFilter.cs" />
     <Compile Include="Models\Availability.cs" />
+    <Compile Include="Models\BeautyFilter.cs" />
     <Compile Include="Models\Country.cs" />
     <Compile Include="Models\DAL\DBServices.cs" />
     <Compile Include="Models\Equipment.cs" />
@@ -197,6 +204,8 @@
     <Compile Include="Models\Search.cs" />
     <Compile Include="Models\Space.cs" />
     <Compile Include="Models\SpaceData.cs" />
+    <Compile Include="Models\SpaceVisit.cs" />
+    <Compile Include="Models\SportFilter.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\WeekAvailability.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
