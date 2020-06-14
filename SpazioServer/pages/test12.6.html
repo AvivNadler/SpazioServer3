@@ -1,0 +1,634 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Spazio</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="../scripts/ajaxCalls.js"></script>
+
+    <script>
+        let favs = [];
+        let users = [];
+        let artFilter = [];
+        let beautyFilter = [];
+        let sportFilter = [];
+        let searches = [];
+        let spacesArr = [];
+        let newspacesArr = [] ;
+        let orders = [];
+        let artPriceAvg = 0;
+        let artCapacityAvg = 0;
+        let sportPriceAvg = 0;
+        let sportCapacityAvg = 0;
+        let beautyPriceAvg = 0;
+        let beautyCapacityAvg = 0;
+        var field = "Sport";
+        var city = "Kfar Yona";
+        var street = "";
+        var number = "";
+        let Grades = {
+            Price: 3,
+            Capacity: 1,
+            facility: 1,
+            Equipment: 2,
+            Rating: 2,
+            Premium: 5,
+            Orders: 2,
+            Conversion: 2
+        };
+
+
+        $(document).ready(function () {
+
+            ajaxCall("GET", "../api/User/", "", getSuccessUsers, getErrorCB);
+
+
+            ajaxCall("GET", "../api/artfilter", "", getSuccessArtFilters, getErrorCB);
+
+            ajaxCall("GET", "../api/beautyfilter", "", getSuccessBeautyFilters, getErrorCB);
+
+            ajaxCall("GET", "../api/sportfilter", "", getSuccessSportFilters, getErrorCB);
+
+            ajaxCall("GET", "../api/Search", "", getSuccessSearch, getErrorCB);
+
+            ajaxCall("GET", "../api/Order", "", getSuccessOrders, getErrorCB);
+
+            ajaxCall("GET", "../api/Favourite", "", getSuccessFavourites, getErrorCB);
+
+            ajaxCall("GET", "../api/SpaceData/AllSpaces", "", getSuccessSpaces, getErrorCB);
+
+            ajaxCall("GET", "../api/SpaceData/grades", "", getSuccessSpaceGrades, getErrorCB);
+
+
+        
+            //ajaxCall("GET", "../api/SpaceData/comments", "", getSuccessSpaces, getErrorCB);
+
+        
+
+
+        });
+        
+        function getSuccessSpaceGrades(data) {
+            console.log("SpaceGrades",data);
+        }
+        function getSuccessComments(data) {
+            console.log("Comments",data);
+        }
+        function getSuccessSpaces(data) {
+            spacesArr = data;
+        }
+        function getSuccessUsers(data) {
+            users = data
+        }
+        function getSuccessArtFilters(data) {
+            artFilter = data;
+
+        }
+        function getSuccessBeautyFilters(data) {
+            beautyFilter = data;
+
+        }
+        function getSuccessSportFilters(data) {
+            sportfilter = data;
+
+        }
+        function getSuccessSearch(data) {
+            searches = data;
+
+        }
+        function getSuccessOrders(data) {
+            orders = data;
+
+        }
+        function getSuccessFavourites(data) {
+
+            //for (var i = 0; i < data.length; i++) {
+            //    favs.push(data[i]);
+            //}
+            favs = data;
+
+
+        }
+        $(document).ajaxStop(function () {
+            grading();
+        });
+
+
+        function grading() {
+            let artPSum = 0
+            let sportPSum = 0
+            let beautyPSum = 0;
+            let artCSum = 0;
+            let sportCSum = 0;
+            let beautyCSum = 0;
+            for (var i = 0; i < spacesArr.length; i++) {
+                spacesArr[i] = { Space: spacesArr[i], Grade: 0 }
+            }
+            for (var i = 0; i < artFilter.length; i++) {
+                artPSum += artFilter[i].MaxPrice + artFilter[i].MinPrice;
+                artCSum += artFilter[i].MaxCapacity + artFilter[i].MinCapacity;
+            }
+
+            for (var i = 0; i < sportFilter.length; i++) {
+                sportPSum += sportFilter[i].MaxPrice + sportFilter[i].MinPrice;
+                sportCSum += sportFilter[i].MaxCapacity + sportFilter[i].MinCapacity;
+            }
+
+            for (var i = 0; i < beautyFilter.length; i++) {
+                beautyPSum += beautyFilter[i].MaxPrice + beautyFilter[i].MinPrice;
+                beautyCSum += beautyFilter[i].MaxCapacity + beautyFilter[i].MinCapacity;
+            }
+
+            artPriceAvg = artPSum / (artFilter.length * 2);
+            artCapacityAvg = artCSum / (artFilter.length * 2);
+            beautyPriceAvg = beautyPSum / (beautyFilter.length * 2);
+            beautyCapacityAvg = beautyCSum / (beautyFilter.length * 2);
+
+            //console.log("favs", favs);
+            //console.log("users", users);
+            //console.log("artFilter", artFilter);
+            //console.log("beautyFilter", beautyFilter);
+            //console.log("sportFilter", sportFilter);
+            //console.log("searches", searches);
+            //console.log("spacesArr", spacesArr);
+            //console.log("orders", orders);
+            //console.log("artPriceAvg", artPriceAvg);
+            //console.log("artCapacityAvg", artCapacityAvg);
+            //console.log("beautyPriceAvg", beautyPriceAvg);
+            //console.log("beautyCapacityAvg", beautyCapacityAvg);
+            //console.log("sdfsfsdf", (spacesArr[0].Space.Space.Price - 85) / 10);
+            //console.log("fdghgh", Math.round(6.2));
+            //console.log("fdghgh", Math.round(6.8));
+
+            //let Grades = {
+            //    Price: 3,
+            //    Capacity: 1,
+            //    facility: 1,
+            //    Equipment: 2,
+            //    Rating: 2,
+            //    Premium: 5,
+            //    Orders: 2,
+            //    Conversion: 2
+            //};
+
+
+            for (var i = 0; i < spacesArr.length; i++) {
+                Grade = 0;
+                ordersCount = 0;
+                for (var j = 0; j < users.length; j++) {
+                    if (users[j].Email == spacesArr[i].Space.Space.UserEmail) {
+                        if (users[j].Premium) {
+                            Grade += Grades.Premium
+                        }
+                        break;
+                    }
+                }
+
+                for (var j = 0; j < orders.length; j++) {
+                    if (orders[j].SpaceId == spacesArr[i].Space.Space.Id) {
+                        ordersCount += 1;
+                    }
+                }
+                Grade += ordersCount * Grades.Orders;
+
+                Grade += (spacesArr[i].Space.Space.Rank) * Grades.Rating;
+                if (spacesArr[i].Space.Space.Field == "Art") {
+                    Grade += ((spacesArr[i].Space.Space.Price - artPriceAvg) / 10) * Grades.Price * (-1);
+                    Grade += (spacesArr[i].Space.Space.Capabillity - artCapacityAvg) * Grades.Capacity;
+                }
+                else if (spacesArr[i].Space.Space.Field == "Beauty") {
+                    Grade += ((spacesArr[i].Space.Space.Price - beautyPriceAvg) / 10) * Grades.Price * (-1);
+                    Grade += (spacesArr[i].Space.Space.Capabillity - beautyCapacityAvg) * Grades.Capacity;
+                }
+
+                spacesArr[i].Grade = Grade;
+            }
+            console.log("spacesArr", spacesArr);
+        }
+
+        function priceGrading() {
+
+        }
+
+
+
+
+
+
+        var querystring = "field=" + field + "&city=" + city + "&street=" + street + "&number=" + number;
+        //  ajaxCall("GET", "../api/space/?" + querystring, "", getSuccessCB, getErrorCB);
+
+        //  ajaxCall("GET", "../api/space/?" + querystring, "", getSuccessCB, getErrorCB);
+
+        var order = {
+            "EndHour": "20:00",
+            "OrderDate": "4/17/2020 3:34:00 PM",
+            "OrderId": "",
+            "Price": "110",
+            "ReservationDate": "01/05/2020",
+            "SpaceId": "6",
+            "StartHour": "19:00",
+            "UserId": "4"
+        };
+        //ajaxCall("POST", "../api/order", JSON.stringify(order), getSuccessCB, getErrorCB);
+
+        var spaceid = 6;
+        var date = "11/06/2020";
+
+
+        var querystring2 = "spaceid=" + spaceid + "&date=" + date;
+
+
+
+        var querystring3 = "field=" + field + "&city=" + city + "&street=" + street + "&number=" + number + "&date=" + date;
+
+        var emptyquerystring3 = "field=&city=&street=&number=&date=" + date;
+
+        var userId = 193;
+
+        var querystringFavourite = "userId=" + userId;
+
+        var userEmail = "giladzim1@gmail.com";
+
+        var querystringMySpaces = "userEmail=" + userEmail;
+
+        var spaces = [6, 7, 8];
+
+
+
+        var spaceid = "spaceid=6";
+
+
+
+
+
+
+
+        //ajaxCall("GET", "../api/RealAvailability/?" + querystring2, "", getSuccessCB, getErrorCB);
+
+
+        //ajaxCall("GET", "../api/SpaceData/?" + emptyquerystring3, "", getSuccessCB, getErrorCB);
+
+        //ajaxCall("GET", "../api/SpaceData/?" + querystringFavourite, "", getSuccessCB, getErrorCB);
+
+
+
+
+        //ajaxCall("GET", "../api/order/?spaceid=6" , "", getSuccessCB, getErrorCB);
+
+
+
+
+        var SpaceData3 = { availability: [{ Day: "Sunday", EndTime: "20:00", StartTime: "22:00", FkSpaceId: "", Times: "500-600" }, { Day: "Friday", EndTime: "18:00", StartTime: "23:00", FkSpaceId: "", Times: "300-900" }] };
+
+        var availability = [{ Day: "Sunday", EndTime: "20:00", StartTime: "22:00", FkSpaceId: "", Times: "500-600" }, { Day: "Friday", EndTime: "18:00", StartTime: "23:00", FkSpaceId: "", Times: "300-900" }];
+
+        var facility =
+        {
+            parking: "true",
+            toilet: "false",
+            kitchen: "true",
+            intercom: "false",
+            accessible: "true",
+            airCondition: "false",
+            wifi: "true",
+            spaceId: "false"
+        };
+
+        var availability2 =
+        {
+            "Friday": "00:00-03:00",
+            "Monday": "10:00-19:00",
+            "Saturday": "14:30-16:30",
+            "Sunday": "09:00-12:00",
+            "Thursday": "06:00-09:00",
+            "Tuesday": "11:00-14:00",
+            "Wednesday": "11:00-13:00"
+        };
+
+        var equipment = [
+            {
+                "Id": "9",
+                "Name": "Drum",
+                "SpaceId": "8"
+            },
+            {
+                "Id": "10",
+                "Name": "Guitar",
+                "SpaceId": "7"
+            }];
+
+        var space = {
+            "AccountNumber": "02981694",
+            "Bank": "Leumi",
+            "Branch": "574",
+            "Capabillity": "12",
+            "City": "Haifa",
+            "Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "Field": "Beauty",
+            "Imageurl1": "https://media-cdn.tripadvisor.com/media/photo-s/15/4c/8c/72/gett-s-hair-studio-salon.jpg",
+            "Imageurl2": "https://media-cdn.tripadvisor.com/media/photo-m/1280/14/ff/61/25/getlstd-property-photo.jpg",
+            "Imageurl3": "https://i.pinimg.com/originals/f2/6e/31/f26e31804ed5324bb444b7233491abaa.jpg",
+            "Imageurl4": "https://i.pinimg.com/originals/b8/5a/40/b85a409cd599f522155a381b38b8875e.jpg",
+            "Imageurl5": "",
+            "Name": "Zaki Hair Salon",
+            "Number": "15",
+            "Price": "85.34",
+            "Rank": "3",
+            "Street": "Herzel",
+            "TermsOfUse": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "Uploadtime": "3/20/2020 12:00:00 AM",
+            "UserEmail": "al@gmail.com"
+        };
+
+        var spacedata2 = {
+            space:
+            {
+                "AccountNumber": "02981694",
+                "Bank": "Leumi",
+                "Branch": "574",
+                "Capabillity": "12",
+                "City": "Haifa",
+                "Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "Field": "Beauty",
+                "Imageurl1": "https://media-cdn.tripadvisor.com/media/photo-s/15/4c/8c/72/gett-s-hair-studio-salon.jpg",
+                "Imageurl2": "https://media-cdn.tripadvisor.com/media/photo-m/1280/14/ff/61/25/getlstd-property-photo.jpg",
+                "Imageurl3": "https://i.pinimg.com/originals/f2/6e/31/f26e31804ed5324bb444b7233491abaa.jpg",
+                "Imageurl4": "https://i.pinimg.com/originals/b8/5a/40/b85a409cd599f522155a381b38b8875e.jpg",
+                "Imageurl5": "",
+                "Name": "Zaki Hair Salon",
+                "Number": "15",
+                "Price": "85.34",
+                "Rank": "3",
+                "Street": "Herzel",
+                "TermsOfUse": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "Uploadtime": "3/20/2020 12:00:00 AM",
+                "UserEmail": "al@gmail.com"
+            },
+            facility:
+            {
+                parking: "true",
+                toilet: "false",
+                kitchen: "true",
+                intercom: "false",
+                accessible: "true",
+                airCondition: "false",
+                wifi: "true",
+                spaceId: "false"
+            },
+            availability:
+            {
+                "Friday": "00:00-03:00",
+                "Monday": "10:00-19:00",
+                "Saturday": "14:30-16:30",
+                "Sunday": "09:00-12:00",
+                "Thursday": "06:00-09:00",
+                "Tuesday": "11:00-14:00",
+                "Wednesday": "11:00-13:00"
+            },
+            equipment:
+            {
+                "Id": "9",
+                "Name": "Drum",
+                "SpaceId": "8"
+            }
+        };
+
+        var spacedata = { space, facility, equipment, availability };
+
+
+        var search = { id: "", field: "Art", locationr: "test", time: "", city: "Tel Aviv", street: "Rotschild", number: "16a", inputDate: "26/06/2020", searchDate: "", userId: "6" };
+
+        //ajaxCall("POST", "../api/Search", JSON.stringify(search) , getSuccessCB, getErrorCB);
+
+        //ajaxCall("GET", "../api/Search", "" , getSuccessCB, getErrorCB);
+
+
+
+        var user = {
+            "email": "zakimaniac3@gmail.com",
+            "Id": "307",
+            "password": "zaki12",
+            "phoneNumber": "054-443-2121",
+            "photo": "",
+            "rank": "0",
+            "registrationDate": "",
+            "spaceOwner": "0",
+            "userName": "Or Zechariaaaaa",
+            "visits": "0",
+
+        };
+
+        var rating = { attitude: 4, Cleanliness: 3, equipmentQuality: 2, facilityQualiy: 4, authenticity: 3, fKSpaceId: 7, fKUserId: 4 }
+        //ajaxCall("PUT", "../api/user/?id="+ user.Id, JSON.stringify(user) , getSuccessCB, getErrorCB);
+        //ajaxCall("POST", "../api/spacedata", JSON.stringify(spacedata) , getSuccessCB, getErrorCB);
+
+        //ajaxCall("POST", "../api/rating", JSON.stringify(rating) , getSuccessCB, getErrorCB);
+
+
+
+        //ajaxCall("PUT", "../api/User/statusupdate/" + user.Id, "" , getSuccessCB, getErrorCB);
+
+        //ajaxCall("GET", "../api/rating", "" , getSuccessCB, getErrorCB);
+
+        //ajaxCall("GET", "../api/user", "" , getSuccessCB, getErrorCB);
+
+        //ajaxCall("GET", "../api/SpaceData/?" + querystringMySpaces, "", getSuccessCB, getErrorCB);
+
+
+
+        
+
+        //ajaxCall("GET", "../api/SpaceData/LastAddedSpaces", "", getSuccessCBLastAddedSpaces, getErrorCBLastAddedSpaces);
+
+        //ajaxCall("DELETE", "../api/space/?id=240", "", getSuccessCBLastAddedSpaces, getErrorCBLastAddedSpaces);
+
+        //ajaxCall("DELETE", "../api/space/?id=222", "", getSuccessCBLastAddedSpaces, getErrorCBLastAddedSpaces);
+
+
+        ajaxCall("GET", "../api/ArtFilter/Data", "", getSuccessArtFilter, getErrorArtFilter);
+
+        ajaxCall("GET", "../api/BeautyFilter/Data", "", getSuccessBeautyFilter, getErrorBeautyFilter);
+
+        ajaxCall("GET", "../api/SportFilter/Data", "", getSuccessSportFilter, getErrorSportFilter);
+
+
+        function getSuccessSportFilter(data) {
+            console.log("SportFilter Data", data);
+        }
+
+        function getErrorSportFilter(error) {
+            console.log(error);
+        }
+
+        function getSuccessBeautyFilter(data) {
+            console.log("BeautyFilter Data", data);
+        }
+
+        function getErrorBeautyFilter(error) {
+            console.log(error);
+        }
+
+        function getSuccessArtFilter(data) {
+            console.log("ArtFilter Data", data);
+        }
+
+        function getErrorArtFilter(error) {
+            console.log(error);
+        }
+
+        var artfilter = {
+            id: "",
+            field: "Art",
+            rating: 3,
+            minPrice: 50,
+            maxPrice: 120,
+            maxDistance: 30,
+            startTime: "20:00",
+            endTime: "22:00",
+            parking: false,
+            toilet: true,
+            kitchen: false,
+            intercom: true,
+            accessible: false,
+            airCondition: true,
+            wiFi: false,
+            canvas: true,
+            greenScreen: false,
+            pottersWheel: true,
+            guitar: false,
+            drum: true,
+            speaker: false,
+            userId: 4,
+            date: "2020-04-16 21:18:00",
+            minCapacity: 2,
+            maxCapacity: 6
+        };
+
+
+        var sportfilter = {
+            id: "",
+            field: "Art",
+            rating: 3,
+            minPrice: 50,
+            maxPrice: 120,
+            maxDistance: 30,
+            startTime: "20:00",
+            endTime: "22:00",
+            parking: false,
+            toilet: true,
+            kitchen: false,
+            intercom: true,
+            accessible: false,
+            airCondition: true,
+            wiFi: false,
+            trx: true,
+            treadmill: false,
+            stationaryBicycle: true,
+            bench: false,
+            dumbells: true,
+            barbell: false,
+            userId: 4,
+            date: "2020-04-16 21:18:00",
+            minCapacity: 2,
+            maxCapacity: 6
+        };
+
+
+
+
+        var beautyfilter = {
+            id: "",
+            field: "Art",
+            rating: 3,
+            minPrice: 50,
+            maxPrice: 120,
+            maxDistance: 30,
+            startTime: "20:00",
+            endTime: "22:00",
+            parking: false,
+            toilet: true,
+            kitchen: false,
+            intercom: true,
+            accessible: false,
+            airCondition: true,
+            wiFi: false,
+            dryers: true,
+            nailPolishRacks: false,
+            receptionAreaSeatingandDecor: true,
+            laserHairRemoval: false,
+            pedicureManicure: true,
+            hairColoringKit: false,
+            userId: 4,
+            date: "2020-04-16 21:18:00",
+            minCapacity: 2,
+            maxCapacity: 6
+        };
+
+        var spaceVisit = { id: "", spaceId: 6, userId: 4, visitDate: "2020-04-16 21:18:00" };
+
+        //ajaxCall("POST", "../api/spacevisit", JSON.stringify(spaceVisit) , getSuccessCB, getErrorCB);
+
+        //ajaxCall("GET", "../api/spacevisit","", getSuccessCB, getErrorCB);
+
+
+
+
+        //console.log(artfilter);
+
+        //console.log(beautyfilter);
+
+        //console.log(sportfilter);
+
+
+
+
+        //ajaxCall("POST", "../api/artfilter", JSON.stringify(artfilter) , getSuccessCB, getErrorCB);
+
+        //ajaxCall("POST", "../api/beautyfilter", JSON.stringify(beautyfilter) , getSuccessCB, getErrorCB);
+
+        //ajaxCall("POST", "../api/sportfilter", JSON.stringify(sportfilter) , getSuccessCB, getErrorCB);
+
+
+
+
+
+
+
+
+
+
+        ajaxCall("GET", "../api/SpaceData/?" + emptyquerystring3, "", getSuccessCB, getErrorCB);
+
+
+        function getSuccessSpaces(data) {
+            console.log("Spaces from date 11/06/2020:", data);
+
+        }
+
+        function getErrorCB(error) {
+            console.log(error);
+
+        }
+
+        function getSuccessCBLastAddedSpaces(data) {
+            console.log("LastAddedSpaces",data);
+
+        }
+
+        function getErrorCBLastAddedSpaces(error) {
+            console.log(error);
+
+        }
+
+
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

@@ -18,6 +18,14 @@ namespace SpazioServer.Controllers
             SportFilter af = new SportFilter();
             return af.getSportFilters();
         }
+
+        [HttpGet]
+        [Route("api/SportFilter/Data")]
+        public Dictionary<string, int> GetData()
+        {
+            DBServices dbs = new DBServices();
+            return dbs.readSportFiltersData();
+        }
         // GET api/<controller>/5
         public string Get(int id)
         {

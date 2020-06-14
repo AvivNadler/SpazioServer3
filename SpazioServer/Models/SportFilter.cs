@@ -9,7 +9,7 @@ namespace SpazioServer.Models
     {
         int id;
         string field;
-        int rating;
+        double rating;
         int minPrice;
         int maxPrice;
         int maxDistance;
@@ -37,7 +37,7 @@ namespace SpazioServer.Models
 
         public SportFilter() { }
 
-        public SportFilter(int id, string field, int rating, int minPrice, int maxPrice, int maxDistance, string startTime, string endTime, Facility facility, Equipment[] eq, bool parking, bool toilet, bool kitchen, bool intercom, bool accessible, bool airCondition, bool wiFi, bool trx, bool treadmill, bool stationaryBicycle, bool bench, bool dumbells, bool barbell, int userId, string date, int minCapacity = 0, int maxCapacity = 0)
+        public SportFilter(int id, string field, double rating, int minPrice, int maxPrice, int maxDistance, string startTime, string endTime, Facility facility, Equipment[] eq, bool parking, bool toilet, bool kitchen, bool intercom, bool accessible, bool airCondition, bool wiFi, bool trx, bool treadmill, bool stationaryBicycle, bool bench, bool dumbells, bool barbell, int userId, string date, int minCapacity = 0, int maxCapacity = 0)
         {
             this.Id = id;
             this.Field = field;
@@ -70,7 +70,7 @@ namespace SpazioServer.Models
 
         public int Id { get => id; set => id = value; }
         public string Field { get => field; set => field = value; }
-        public int Rating { get => rating; set => rating = value; }
+        public double Rating { get => rating; set => rating = value; }
         public int MinPrice { get => minPrice; set => minPrice = value; }
         public int MaxPrice { get => maxPrice; set => maxPrice = value; }
         public int MaxDistance { get => maxDistance; set => maxDistance = value; }

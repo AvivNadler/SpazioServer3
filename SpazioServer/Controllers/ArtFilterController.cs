@@ -17,6 +17,13 @@ namespace SpazioServer.Controllers
             ArtFilter af = new ArtFilter();
             return af.getArtFilters();
         }
+        [HttpGet]
+        [Route("api/ArtFilter/Data")]
+        public Dictionary<string, int> GetData()
+        {
+            DBServices dbs = new DBServices();
+            return dbs.readArtFiltersData();
+        }
         // GET api/<controller>/5
         public string Get(int id)
         {

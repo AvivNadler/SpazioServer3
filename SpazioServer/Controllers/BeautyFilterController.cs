@@ -17,6 +17,14 @@ namespace SpazioServer.Controllers
             BeautyFilter af = new BeautyFilter();
             return af.getBeautyFilters();
         }
+
+        [HttpGet]
+        [Route("api/BeautyFilter/Data")]
+        public Dictionary<string, int> GetData()
+        {
+            DBServices dbs = new DBServices();
+            return dbs.readBeautyFiltersData();
+        }
         // GET api/<controller>/5
         public string Get(int id)
         {

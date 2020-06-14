@@ -30,7 +30,7 @@ namespace SpazioServer.Models
         string uploadtime;
         int visits;
         int rankCount;
-        
+        double grade;
 
         public int Id { get => id; set => id = value; }
         public string Name { get => name; set => name = value; }
@@ -55,8 +55,9 @@ namespace SpazioServer.Models
         public string Uploadtime { get => uploadtime; set => uploadtime = value; }
         public int Visits { get => visits; set => visits = value; }
         public int RankCount { get => rankCount; set => rankCount = value; }
+        public double Grade { get => grade; set => grade = value; }
 
-        public Space(int id, string name, string field, float price, string city, string street, string number, int capabillity, string bank, string branch, string accountNumber, string imageurl1, string imageurl2, string imageurl3, string imageurl4, string imageurl5, string userEmail, string description, string termsOfUse, double rank, string uploadtime, int visits, int rankCount)
+        public Space(int id, string name, string field, float price, string city, string street, string number, int capabillity, string bank, string branch, string accountNumber, string imageurl1, string imageurl2, string imageurl3, string imageurl4, string imageurl5, string userEmail, string description, string termsOfUse, double rank, string uploadtime, int visits, int rankCount, double Grade)
         {
             this.id = id;
             this.name = name;
@@ -81,6 +82,7 @@ namespace SpazioServer.Models
             this.uploadtime = uploadtime;
             this.visits = visits;
             this.rankCount = rankCount;
+            this.grade = Grade;
         }
         public Space() { }
 
@@ -101,12 +103,12 @@ namespace SpazioServer.Models
             return numAffected;
         }
 
-       /* public int updateSpace(int id)
-        {
-            DBServices dbs = new DBServices();
-            int numAffected = dbs.updateSpace(this);
-            return numAffected;
-        }*/
+        /* public int updateSpace(int id)
+         {
+             DBServices dbs = new DBServices();
+             int numAffected = dbs.updateSpace(this);
+             return numAffected;
+         }*/
 
         public int deleteSpace(int id)
         {
@@ -115,11 +117,11 @@ namespace SpazioServer.Models
             return numEffected;
 
         }
-        
-            public List<Space> getSpacesBySearch(string field,string city, string street,string number)
+
+        public List<Space> getSpacesBySearch(string field, string city, string street, string number)
         {
             DBServices dbs = new DBServices();
-            return dbs.readSpacesBySearch(field,city,street,number);
+            return dbs.readSpacesBySearch(field, city, street, number);
         }
 
 

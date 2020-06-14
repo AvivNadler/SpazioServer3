@@ -2618,7 +2618,74 @@ public class DBServices
         return avaList;
     }
 
+    public List<Space> readAllSpaces()
+    {
+        List<Space> Spaces = new List<Space>();
+        SqlConnection con = null;
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        try
+        {
+            string selectSTR = "SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate Order by UploadDate Desc";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Space s = new Space();
 
+                s.Id = Convert.ToInt32(dr["SpaceId"]);
+                s.Name = (string)dr["SpaceName"];
+                s.Field = (string)dr["Field"];
+                s.Price = Convert.ToDouble(dr["Price"]);
+                s.City = (string)dr["City"];
+                s.Street = (string)dr["Street"];
+                s.Number = (string)dr["Number"];
+                s.Capabillity = Convert.ToInt32(dr["Capabillity"]);
+                s.Bank = (string)dr["Bank"];
+                s.Branch = (string)dr["Branch"];
+                s.AccountNumber = (string)dr["AccountNumber"];
+                s.Imageurl1 = (string)dr["Image1"];
+                s.Imageurl2 = (string)dr["Image2"];
+                s.Imageurl3 = (string)dr["Image3"];
+                s.Imageurl4 = (string)dr["Image4"];
+                s.Imageurl5 = (string)dr["Image5"];
+                s.UserEmail = (string)dr["FKEmail"];
+                s.Description = (string)dr["Description"];
+                s.TermsOfUse = (string)dr["TermsOfUse"];
+                if (dr["Rank"] == DBNull.Value)
+                { //in case there is not ratings to space yet
+                    s.Rank = 3.499;
+                }
+                else
+                {
+                    s.Rank = Convert.ToDouble(dr["Rank"]);
+                }
+                s.Uploadtime = dr["UploadDate"].ToString();
+
+                Spaces.Add(s);
+            }
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+        return Spaces;
+    }
 
     public List<string> readAllAvailbilities(int spaceId, string date)
     {
@@ -3558,8 +3625,8 @@ public class DBServices
                 ArtFilter af = new ArtFilter();
 
                 af.Id = Convert.ToInt32(dr["Id"]);
-                af.Field = (string)dr["Field"]; 
-                af.Rating = Convert.ToInt32(dr["Rating"]); 
+                af.Field = (string)dr["Field"];
+                af.Rating = Convert.ToDouble(dr["Rating"]);
                 af.MinPrice = Convert.ToInt32(dr["minPrice"]); 
                 af.MaxPrice = Convert.ToInt32(dr["maxPrice"]);
                 af.MaxDistance = Convert.ToInt32(dr["MaxDistance"]) ;
@@ -3651,7 +3718,7 @@ public class DBServices
         string format = "yyyy-MM-dd HH:mm:ss";
         DateTime time = DateTime.Now;
 
-        sb.AppendFormat("Values('{0}',{1}, {2},{3},{4},'{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}',{20},'{21}',{22},{23})", af.Field,af.Rating.ToString(),af.MinPrice.ToString(), af.MaxPrice.ToString(),af.MaxDistance.ToString(),af.StartTime, af.EndTime,af.Parking,af.Toilet,af.Kitchen,af.Intercom,af.Accessible,af.AirCondition,af.WiFi,af.Canvas,af.GreenScreen,af.PottersWheel,af.Guitar,af.Drum,af.Speaker,af.UserId.ToString(),time.ToString(),af.MinCapacity.ToString(),af.MaxCapacity.ToString());
+        sb.AppendFormat("Values('{0}',{1}, {2},{3},{4},'{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}',{20},'{21}',{22},{23})", af.Field,af.Rating.ToString(),af.MinPrice.ToString(), af.MaxPrice.ToString(),af.MaxDistance.ToString(),af.StartTime, af.EndTime,af.Parking,af.Toilet,af.Kitchen,af.Intercom,af.Accessible,af.AirCondition,af.WiFi,af.Canvas,af.GreenScreen,af.PottersWheel,af.Guitar,af.Drum,af.Speaker,af.UserId.ToString(),time.ToString(format),af.MinCapacity.ToString(),af.MaxCapacity.ToString());
         String prefix = "INSERT INTO ArtFilters_2020 " + "([Field],[Rating],[minPrice],[maxPrice],[MaxDistance],[StartTime],[EndTime],[Parking]  ,[Toilet] ,[Kitchen] ,[Intercom],[Accessible]  ,[AirCondition] ,[WiFi] ,[Canvas] ,[GreenScreen],[PottersWheel],[Guitar],[Drum] ,[Speaker] ,[FkUserId],[FilterDate],[minCapacity],[maxCapacity]) ";
         command = prefix + sb.ToString();
 
@@ -3684,7 +3751,7 @@ public class DBServices
 
                 sf.Id = Convert.ToInt32(dr["Id"]);
                 sf.Field = (string)dr["Field"];
-                sf.Rating = Convert.ToInt32(dr["Rating"]);
+                sf.Rating = Convert.ToDouble(dr["Rating"]);
                 sf.MinPrice = Convert.ToInt32(dr["minPrice"]);
                 sf.MaxPrice = Convert.ToInt32(dr["maxPrice"]);
                 sf.MaxDistance = Convert.ToInt32(dr["MaxDistance"]);
@@ -3809,7 +3876,7 @@ public class DBServices
 
                 bf.Id = Convert.ToInt32(dr["Id"]);
                 bf.Field = (string)dr["Field"];
-                bf.Rating = Convert.ToInt32(dr["Rating"]);
+                bf.Rating = Convert.ToDouble(dr["Rating"]);
                 bf.MinPrice = Convert.ToInt32(dr["minPrice"]);
                 bf.MaxPrice = Convert.ToInt32(dr["maxPrice"]);
                 bf.MaxDistance = Convert.ToInt32(dr["MaxDistance"]);
@@ -4011,7 +4078,674 @@ public class DBServices
         return command;
     }
 
+    //--------------------------------------------------------------------
+    // Build the Insert command method String for Users table
+    //--------------------------------------------------------------------
 
+
+    //--------------------------------------------------------------------
+    // Build the Insert command method String for Users table
+    //--------------------------------------------------------------------
+
+
+    public Dictionary<string, int> readArtFiltersData()
+    {
+        //List<ArtFilter> list = new List<ArtFilter>();
+        Dictionary<string, int> Data = new Dictionary<string, int>();
+        SqlConnection con = null;
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        try
+        {
+
+            StringBuilder sb = new StringBuilder();
+
+            // use a string builder to create the dynamic string
+            string selectSTR = @"select COUNT(Id) as Counter,
+AVG(minPrice) as minPriceAvg,
+AVG(maxPrice) as maxPriceAvg,
+AVG(Rating) as RatingAvg,
+AVG(MaxDistance) as MaxDistanceAvg,
+cast(cast(avg(cast(CAST(StartTime as datetime) as float)) as datetime) as time(0)) AvgStartTime,
+cast(cast(avg(cast(CAST(EndTime as datetime) as float)) as datetime) as time(0)) AvgEndTime,
+/*Cast(LTRIM(DATEDIFF(MINUTE, 0, StartTime)) as int) as AvgStartTimeMinutes,
+Cast(LTRIM(DATEDIFF(MINUTE, 0, EndTime)) as int) as AvgEndTimeMinutes,*/
+AVG((DATEDIFF(MINUTE, 0, StartTime))) as AvgStartTimeMinutes,
+AVG((DATEDIFF(MINUTE, 0, EndTime))) as AvgEndTimeMinutes,
+count(nullif([Parking], 'false')) as ParkingCounter,
+count(nullif([Toilet], 'false')) as ToiletCounter,
+count(nullif([Kitchen], 'false')) as KitchenCounter,
+count(nullif([Intercom], 'false')) as IntercomCounter,
+count(nullif([Accessible], 'false')) as AccessibleCounter,
+count(nullif([AirCondition], 'false')) as AirConditionCounter,
+count(nullif([WiFi], 'false')) as WiFiCounter,
+count(nullif([Canvas], 'false')) as CanvasCounter,
+count(nullif([GreenScreen], 'false')) as GreenScreenCounter,
+count(nullif([PottersWheel], 'false')) as PottersWheelCounter,
+count(nullif([Guitar], 'false')) as GuitarCounter,
+count(nullif([Drum], 'false')) as DrumCounter,
+count(nullif([Speaker], 'false')) as SpeakerCounter,
+count(nullif([PottersWheel], 'false')) as PottersWheelCounter,
+AVG(minCapacity) as minCapacityAvg,
+AVG(maxCapacity) as maxCapacityAvg
+
+from ArtFilters_2020
+where DATEDIFF(D, [FilterDate], GETDATE())  < 14 ";
+
+            //where DATEDIFF(D, [FilterDate], GETDATE())  < 14 "; #TODO 
+
+
+            // Add some elements to the dictionary. There are no
+            // duplicate keys, but some of the values are duplicates.
+
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                //ArtFilter af = new ArtFilter();
+
+                //af.Id = 0;
+                //af.Field = (string)dr["Field"];
+                //af.Rating = Convert.ToInt32(dr["Rating"]);
+                //af.MinPrice = Convert.ToInt32(dr["minPrice"]);
+                //af.MaxPrice = Convert.ToInt32(dr["maxPrice"]);
+                //af.MaxDistance = Convert.ToInt32(dr["MaxDistance"]);
+                //af.StartTime = dr["StartTime"].ToString();
+                //af.EndTime = dr["EndTime"].ToString();
+                //af.Parking = Convert.ToBoolean(dr["Parking"]);
+                //af.Toilet = Convert.ToBoolean(dr["Toilet"]);
+                //af.Kitchen = Convert.ToBoolean(dr["Kitchen"]);
+                //af.Intercom = Convert.ToBoolean(dr["Intercom"]);
+                //af.Accessible = Convert.ToBoolean(dr["Accessible"]);
+                //af.AirCondition = Convert.ToBoolean(dr["AirCondition"]);
+                //af.WiFi = Convert.ToBoolean(dr["WiFi"]);
+                //af.Canvas = Convert.ToBoolean(dr["Canvas"]);
+                //af.GreenScreen = Convert.ToBoolean(dr["GreenScreen"]);
+                //af.PottersWheel = Convert.ToBoolean(dr["PottersWheel"]);
+                //af.Guitar = Convert.ToBoolean(dr["Guitar"]);
+                //af.Drum = Convert.ToBoolean(dr["Drum"]);
+                //af.Speaker = Convert.ToBoolean(dr["Speaker"]);
+                //af.UserId = Convert.ToInt32(dr["FkUserId"]);
+                //af.Date = dr["FilterDate"].ToString();
+                //af.MinCapacity = Convert.ToInt32(dr["minCapacity"]);
+                //af.MaxCapacity = Convert.ToInt32(dr["maxCapacity"]);
+
+                Data.Add("Counter", Convert.ToInt32(dr["Counter"]));
+                Data.Add("minCapacityAvg", Convert.ToInt32(dr["minCapacityAvg"]));
+                Data.Add("maxCapacityAvg", Convert.ToInt32(dr["maxCapacityAvg"]));
+                Data.Add("minPriceAvg", Convert.ToInt32(dr["minPriceAvg"]));
+                Data.Add("maxPriceAvg", Convert.ToInt32(dr["maxPriceAvg"]));
+                Data.Add("MaxDistanceAvg", Convert.ToInt32(dr["MaxDistanceAvg"]));
+                Data.Add("AvgStartTimeMinutes", Convert.ToInt32(dr["AvgStartTimeMinutes"]));
+                Data.Add("AvgEndTimeMinutes", Convert.ToInt32(dr["AvgEndTimeMinutes"]));
+                Data.Add("ToiletCounter", Convert.ToInt32(dr["ToiletCounter"]));
+                Data.Add("ParkingCounter", Convert.ToInt32(dr["ParkingCounter"]));
+                Data.Add("KitchenCounter", Convert.ToInt32(dr["KitchenCounter"]));
+                Data.Add("IntercomCounter", Convert.ToInt32(dr["IntercomCounter"]));
+                Data.Add("AccessibleCounter", Convert.ToInt32(dr["AccessibleCounter"]));
+                Data.Add("AirConditionCounter", Convert.ToInt32(dr["AirConditionCounter"]));
+                Data.Add("WiFiCounter", Convert.ToInt32(dr["WiFiCounter"]));
+                Data.Add("CanvasCounter", Convert.ToInt32(dr["CanvasCounter"]));
+                Data.Add("GreenScreenCounter", Convert.ToInt32(dr["GreenScreenCounter"]));
+                Data.Add("PottersWheelCounter", Convert.ToInt32(dr["PottersWheelCounter"]));
+                Data.Add("GuitarCounter", Convert.ToInt32(dr["GuitarCounter"]));
+                Data.Add("DrumCounter", Convert.ToInt32(dr["DrumCounter"]));
+                Data.Add("SpeakerCounter", Convert.ToInt32(dr["SpeakerCounter"]));
+
+
+                //list.Add(af);
+            }
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+        return Data;
+    }
+    public Dictionary<string, int> readBeautyFiltersData()
+    {
+        //List<ArtFilter> list = new List<ArtFilter>();
+        Dictionary<string, int> Data = new Dictionary<string, int>();
+        SqlConnection con = null;
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        try
+        {
+
+            StringBuilder sb = new StringBuilder();
+
+            // use a string builder to create the dynamic string
+            string selectSTR = @"select COUNT(Id) as Counter,
+AVG(minPrice) as minPriceAvg,
+AVG(maxPrice) as maxPriceAvg,
+AVG(Rating) as RatingAvg,
+AVG(MaxDistance) as MaxDistanceAvg,
+cast(cast(avg(cast(CAST(StartTime as datetime) as float)) as datetime) as time(0)) AvgStartTime,
+cast(cast(avg(cast(CAST(EndTime as datetime) as float)) as datetime) as time(0)) AvgEndTime,
+AVG((DATEDIFF(MINUTE, 0, StartTime))) as AvgStartTimeMinutes,
+AVG((DATEDIFF(MINUTE, 0, EndTime))) as AvgEndTimeMinutes,
+count(nullif([Parking], 'false')) as ParkingCounter,
+count(nullif([Toilet], 'false')) as ToiletCounter,
+count(nullif([Kitchen], 'false')) as KitchenCounter,
+count(nullif([Intercom], 'false')) as IntercomCounter,
+count(nullif([Accessible], 'false')) as AccessibleCounter,
+count(nullif([AirCondition], 'false')) as AirConditionCounter,
+count(nullif([WiFi], 'false')) as WiFiCounter,
+count(nullif([Dryers], 'false')) as DryersCounter,
+count(nullif([NailPolishRacks], 'false')) as NailPolishRacksCounter,
+count(nullif([ReceptionAreaSeatingandDecor], 'false')) as ReceptionAreaSeatingandDecorCounter,
+count(nullif([LaserHairRemoval], 'false')) as LaserHairRemovalCounter,
+count(nullif([PedicureManicure], 'false')) as PedicureManicureCounter,
+count(nullif([HairColoringKit], 'false')) as HairColoringKitCounter,
+AVG(minCapacity) as minCapacityAvg,
+AVG(maxCapacity) as maxCapacityAvg
+
+from BeautyFilters_2020
+where DATEDIFF(D, [FilterDate], GETDATE())  < 14 ";
+
+            //where DATEDIFF(D, [FilterDate], GETDATE())  < 14 "; #TODO 
+
+            // Add some elements to the dictionary. There are no
+            // duplicate keys, but some of the values are duplicates.
+
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                //ArtFilter af = new ArtFilter();
+
+                //af.Id = 0;
+                //af.Field = (string)dr["Field"];
+                //af.Rating = Convert.ToInt32(dr["Rating"]);
+                //af.MinPrice = Convert.ToInt32(dr["minPrice"]);
+                //af.MaxPrice = Convert.ToInt32(dr["maxPrice"]);
+                //af.MaxDistance = Convert.ToInt32(dr["MaxDistance"]);
+                //af.StartTime = dr["StartTime"].ToString();
+                //af.EndTime = dr["EndTime"].ToString();
+                //af.Parking = Convert.ToBoolean(dr["Parking"]);
+                //af.Toilet = Convert.ToBoolean(dr["Toilet"]);
+                //af.Kitchen = Convert.ToBoolean(dr["Kitchen"]);
+                //af.Intercom = Convert.ToBoolean(dr["Intercom"]);
+                //af.Accessible = Convert.ToBoolean(dr["Accessible"]);
+                //af.AirCondition = Convert.ToBoolean(dr["AirCondition"]);
+                //af.WiFi = Convert.ToBoolean(dr["WiFi"]);
+                //af.Canvas = Convert.ToBoolean(dr["Canvas"]);
+                //af.GreenScreen = Convert.ToBoolean(dr["GreenScreen"]);
+                //af.PottersWheel = Convert.ToBoolean(dr["PottersWheel"]);
+                //af.Guitar = Convert.ToBoolean(dr["Guitar"]);
+                //af.Drum = Convert.ToBoolean(dr["Drum"]);
+                //af.Speaker = Convert.ToBoolean(dr["Speaker"]);
+                //af.UserId = Convert.ToInt32(dr["FkUserId"]);
+                //af.Date = dr["FilterDate"].ToString();
+                //af.MinCapacity = Convert.ToInt32(dr["minCapacity"]);
+                //af.MaxCapacity = Convert.ToInt32(dr["maxCapacity"]);
+
+                Data.Add("Counter", Convert.ToInt32(dr["Counter"]));
+                Data.Add("minCapacityAvg", Convert.ToInt32(dr["minCapacityAvg"]));
+                Data.Add("maxCapacityAvg", Convert.ToInt32(dr["maxCapacityAvg"]));
+                Data.Add("minPriceAvg", Convert.ToInt32(dr["minPriceAvg"]));
+                Data.Add("maxPriceAvg", Convert.ToInt32(dr["maxPriceAvg"]));
+                Data.Add("MaxDistanceAvg", Convert.ToInt32(dr["MaxDistanceAvg"]));
+                Data.Add("AvgStartTimeMinutes", Convert.ToInt32(dr["AvgStartTimeMinutes"]));
+                Data.Add("AvgEndTimeMinutes", Convert.ToInt32(dr["AvgEndTimeMinutes"]));
+                Data.Add("ToiletCounter", Convert.ToInt32(dr["ToiletCounter"]));
+                Data.Add("ParkingCounter", Convert.ToInt32(dr["ParkingCounter"]));
+                Data.Add("KitchenCounter", Convert.ToInt32(dr["KitchenCounter"]));
+                Data.Add("IntercomCounter", Convert.ToInt32(dr["IntercomCounter"]));
+                Data.Add("AccessibleCounter", Convert.ToInt32(dr["AccessibleCounter"]));
+                Data.Add("AirConditionCounter", Convert.ToInt32(dr["AirConditionCounter"]));
+                Data.Add("WiFiCounter", Convert.ToInt32(dr["WiFiCounter"]));
+                Data.Add("DryersCounter", Convert.ToInt32(dr["DryersCounter"]));
+                Data.Add("NailPolishRacksCounter", Convert.ToInt32(dr["NailPolishRacksCounter"]));
+                Data.Add("ReceptionAreaSeatingandDecorCounter", Convert.ToInt32(dr["ReceptionAreaSeatingandDecorCounter"]));
+                Data.Add("LaserHairRemovalCounter", Convert.ToInt32(dr["LaserHairRemovalCounter"]));
+                Data.Add("PedicureManicureCounter", Convert.ToInt32(dr["PedicureManicureCounter"]));
+                Data.Add("HairColoringKitCounter", Convert.ToInt32(dr["HairColoringKitCounter"]));
+
+
+                //list.Add(af);
+            }
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+        return Data;
+    }
+    public Dictionary<string, int> readSportFiltersData()
+    {
+        //List<ArtFilter> list = new List<ArtFilter>();
+        Dictionary<string, int> Data = new Dictionary<string, int>();
+        SqlConnection con = null;
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        try
+        {
+
+            StringBuilder sb = new StringBuilder();
+
+            // use a string builder to create the dynamic string
+            string selectSTR = @"select COUNT(Id) as Counter,
+AVG(minPrice) as minPriceAvg,
+AVG(maxPrice) as maxPriceAvg,
+AVG(Rating) as RatingAvg,
+AVG(MaxDistance) as MaxDistanceAvg,
+cast(cast(avg(cast(CAST(StartTime as datetime) as float)) as datetime) as time(0)) AvgStartTime,
+cast(cast(avg(cast(CAST(EndTime as datetime) as float)) as datetime) as time(0)) AvgEndTime,
+AVG((DATEDIFF(MINUTE, 0, StartTime))) as AvgStartTimeMinutes,
+AVG((DATEDIFF(MINUTE, 0, EndTime))) as AvgEndTimeMinutes,
+count(nullif([Parking], 'false')) as ParkingCounter,
+count(nullif([Toilet], 'false')) as ToiletCounter,
+count(nullif([Kitchen], 'false')) as KitchenCounter,
+count(nullif([Intercom], 'false')) as IntercomCounter,
+count(nullif([Accessible], 'false')) as AccessibleCounter,
+count(nullif([AirCondition], 'false')) as AirConditionCounter,
+count(nullif([WiFi], 'false')) as WiFiCounter,
+count(nullif([TRX], 'false')) as TRXCounter,
+count(nullif([Treadmill], 'false')) as TreadmillCounter,
+count(nullif([StationaryBicycle], 'false')) as StationaryBicycleCounter,
+count(nullif([Bench], 'false')) as BenchCounter,
+count(nullif([Dumbells], 'false')) as DumbellsCounter,
+count(nullif(Barbell, 'false')) as BarbellCounter,
+AVG(minCapacity) as minCapacityAvg,
+AVG(maxCapacity) as maxCapacityAvg
+
+from SportFilters_2020
+where DATEDIFF(D, [FilterDate], GETDATE())  < 14 ";
+
+            //where DATEDIFF(D, [FilterDate], GETDATE())  < 14 "; #TODO 
+
+            // Add some elements to the dictionary. There are no
+            // duplicate keys, but some of the values are duplicates.
+
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                //ArtFilter af = new ArtFilter();
+
+                //af.Id = 0;
+                //af.Field = (string)dr["Field"];
+                //af.Rating = Convert.ToInt32(dr["Rating"]);
+                //af.MinPrice = Convert.ToInt32(dr["minPrice"]);
+                //af.MaxPrice = Convert.ToInt32(dr["maxPrice"]);
+                //af.MaxDistance = Convert.ToInt32(dr["MaxDistance"]);
+                //af.StartTime = dr["StartTime"].ToString();
+                //af.EndTime = dr["EndTime"].ToString();
+                //af.Parking = Convert.ToBoolean(dr["Parking"]);
+                //af.Toilet = Convert.ToBoolean(dr["Toilet"]);
+                //af.Kitchen = Convert.ToBoolean(dr["Kitchen"]);
+                //af.Intercom = Convert.ToBoolean(dr["Intercom"]);
+                //af.Accessible = Convert.ToBoolean(dr["Accessible"]);
+                //af.AirCondition = Convert.ToBoolean(dr["AirCondition"]);
+                //af.WiFi = Convert.ToBoolean(dr["WiFi"]);
+                //af.Canvas = Convert.ToBoolean(dr["Canvas"]);
+                //af.GreenScreen = Convert.ToBoolean(dr["GreenScreen"]);
+                //af.PottersWheel = Convert.ToBoolean(dr["PottersWheel"]);
+                //af.Guitar = Convert.ToBoolean(dr["Guitar"]);
+                //af.Drum = Convert.ToBoolean(dr["Drum"]);
+                //af.Speaker = Convert.ToBoolean(dr["Speaker"]);
+                //af.UserId = Convert.ToInt32(dr["FkUserId"]);
+                //af.Date = dr["FilterDate"].ToString();
+                //af.MinCapacity = Convert.ToInt32(dr["minCapacity"]);
+                //af.MaxCapacity = Convert.ToInt32(dr["maxCapacity"]);
+
+                Data.Add("Counter", Convert.ToInt32(dr["Counter"]));
+                Data.Add("minCapacityAvg", Convert.ToInt32(dr["minCapacityAvg"]));
+                Data.Add("maxCapacityAvg", Convert.ToInt32(dr["maxCapacityAvg"]));
+                Data.Add("minPriceAvg", Convert.ToInt32(dr["minPriceAvg"]));
+                Data.Add("maxPriceAvg", Convert.ToInt32(dr["maxPriceAvg"]));
+                Data.Add("MaxDistanceAvg", Convert.ToInt32(dr["MaxDistanceAvg"]));
+                Data.Add("AvgStartTimeMinutes", Convert.ToInt32(dr["AvgStartTimeMinutes"]));
+                Data.Add("AvgEndTimeMinutes", Convert.ToInt32(dr["AvgEndTimeMinutes"]));
+                Data.Add("ToiletCounter", Convert.ToInt32(dr["ToiletCounter"]));
+                Data.Add("ParkingCounter", Convert.ToInt32(dr["ParkingCounter"]));
+                Data.Add("KitchenCounter", Convert.ToInt32(dr["KitchenCounter"]));
+                Data.Add("IntercomCounter", Convert.ToInt32(dr["IntercomCounter"]));
+                Data.Add("AccessibleCounter", Convert.ToInt32(dr["AccessibleCounter"]));
+                Data.Add("AirConditionCounter", Convert.ToInt32(dr["AirConditionCounter"]));
+                Data.Add("WiFiCounter", Convert.ToInt32(dr["WiFiCounter"]));
+                Data.Add("TRXCounter", Convert.ToInt32(dr["TRXCounter"]));
+                Data.Add("TreadmillCounter", Convert.ToInt32(dr["TreadmillCounter"]));
+                Data.Add("StationaryBicycleCounter", Convert.ToInt32(dr["StationaryBicycleCounter"]));
+                Data.Add("BenchCounter", Convert.ToInt32(dr["BenchCounter"]));
+                Data.Add("DumbellsCounter", Convert.ToInt32(dr["DumbellsCounter"]));
+                Data.Add("BarbellCounter", Convert.ToInt32(dr["BarbellCounter"]));
+
+
+                //list.Add(af);
+            }
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+        return Data;
+    }
+
+    
+
+    //--------------------------------------------------------------------
+    // Build the Insert command method String for Users table
+    //--------------------------------------------------------------------
+
+    public int getOrdersAmountById(int spaceid)
+    {
+        int amount = 0;
+        SqlConnection con = null;
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        try
+        {
+
+            StringBuilder sb = new StringBuilder();
+
+            // use a string builder to create the dynamic string
+            string selectSTR = @"select COUNT(OrderId) as OrdersAmount
+from Orders_2020
+Where spaceid=" + spaceid;
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+
+
+                amount = Convert.ToInt32(dr["OrdersAmount"]);
+            }
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+        return amount;
+
+    }
+
+    public Dictionary<string, int> getGrades()
+    {
+
+        //List<ArtFilter> list = new List<ArtFilter>();
+        Dictionary<string, int> Grades = new Dictionary<string, int>();
+        SqlConnection con = null;
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        try
+        {
+
+            StringBuilder sb = new StringBuilder();
+
+            // use a string builder to create the dynamic string
+            string selectSTR = @"select * from Grades_2020";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+
+                Grades.Add("Price", Convert.ToInt32(dr["Price"]));
+                Grades.Add("Capacity", Convert.ToInt32(dr["Capacity"]));
+                Grades.Add("Facility", Convert.ToInt32(dr["Facility"]));
+                Grades.Add("Equipment", Convert.ToInt32(dr["Equipment"]));
+                Grades.Add("Rating", Convert.ToInt32(dr["Rating"]));
+                Grades.Add("Premium", Convert.ToInt32(dr["Premium"]));
+                Grades.Add("Order", Convert.ToInt32(dr["Order"]));
+                Grades.Add("Conversion", Convert.ToInt32(dr["Conversion"]));
+
+
+            }
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+        return Grades;
+
+    }
+
+    public int readSpaceVisits(int spaceId)
+    {
+        List<SpaceVisit> list = new List<SpaceVisit>();
+        SqlConnection con = null;
+        int visits = 0;
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        try
+        {
+
+            StringBuilder sb = new StringBuilder();
+
+            // use a string builder to create the dynamic string
+            string selectSTR = @"select COUNT(Id) as Visits
+from SpaceVisits_2020
+where SpaceId=" + spaceId;
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+
+                visits = Convert.ToInt32(dr["Visits"]);
+
+            }
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+        return visits;
+    }
+    public bool isUserPremium(string userEmail)
+    {
+        bool b = false;
+        List<Space> Spaces = new List<Space>();
+        SqlConnection con = null;
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        try
+        {
+
+            string selectSTR = @"select Premium 
+from Users_2020
+where Email='" + userEmail + "'";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                b = Convert.ToBoolean(dr["Premium"]);
+            }
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+        return b;
+    }
+
+    public double readFiltersDataRating(string field)
+    {
+        //List<ArtFilter> list = new List<ArtFilter>();
+        double rating = 0;
+        SqlConnection con = null;
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        try
+        {
+
+            StringBuilder sb = new StringBuilder();
+
+            // use a string builder to create the dynamic string
+            string selectSTR = @"select AVG(Rating) as RatingAvg 
+from " + field + @"Filters_2020
+where DATEDIFF(D, [FilterDate], GETDATE())  < 14 ";
+
+            //where DATEDIFF(D, [FilterDate], GETDATE())  < 3 "; #TODO 
+
+
+            // Add some elements to the dictionary. There are no
+            // duplicate keys, but some of the values are duplicates.
+
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                //ArtFilter af = new ArtFilter();
+
+                //af.Id = 0;
+                //af.Field = (string)dr["Field"];
+
+                //af.MinPrice = Convert.ToInt32(dr["minPrice"]);
+                //af.MaxPrice = Convert.ToInt32(dr["maxPrice"]);
+                //af.MaxDistance = Convert.ToInt32(dr["MaxDistance"]);
+                //af.StartTime = dr["StartTime"].ToString();
+                //af.EndTime = dr["EndTime"].ToString();
+                //af.Parking = Convert.ToBoolean(dr["Parking"]);
+                //af.Toilet = Convert.ToBoolean(dr["Toilet"]);
+                //af.Kitchen = Convert.ToBoolean(dr["Kitchen"]);
+                //af.Intercom = Convert.ToBoolean(dr["Intercom"]);
+                //af.Accessible = Convert.ToBoolean(dr["Accessible"]);
+                //af.AirCondition = Convert.ToBoolean(dr["AirCondition"]);
+                //af.WiFi = Convert.ToBoolean(dr["WiFi"]);
+                //af.Canvas = Convert.ToBoolean(dr["Canvas"]);
+                //af.GreenScreen = Convert.ToBoolean(dr["GreenScreen"]);
+                //af.PottersWheel = Convert.ToBoolean(dr["PottersWheel"]);
+                //af.Guitar = Convert.ToBoolean(dr["Guitar"]);
+                //af.Drum = Convert.ToBoolean(dr["Drum"]);
+                //af.Speaker = Convert.ToBoolean(dr["Speaker"]);
+                //af.UserId = Convert.ToInt32(dr["FkUserId"]);
+                //af.Date = dr["FilterDate"].ToString();
+                //af.MinCapacity = Convert.ToInt32(dr["minCapacity"]);
+                //af.MaxCapacity = Convert.ToInt32(dr["maxCapacity"]);
+                rating = Convert.ToDouble(dr["RatingAvg"]);
+
+
+
+                //list.Add(af);
+            }
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+        return rating;
+    }
 }
 
 
