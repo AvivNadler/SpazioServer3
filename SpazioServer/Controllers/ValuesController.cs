@@ -4,6 +4,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using SpazioServer.Models;
+
 
 namespace SpazioServer.Controllers
 {
@@ -26,6 +28,14 @@ namespace SpazioServer.Controllers
         {
         }
 
+        [HttpGet]
+        [Route("api/SpaceData/grades")]
+
+        public Dictionary<string,int> GetGrades()
+        {
+            DBServices dbs = new DBServices();
+            return dbs.getGrades();
+        }
         // PUT api/values/5
         public void Put(int id, [FromBody]string value)
         {

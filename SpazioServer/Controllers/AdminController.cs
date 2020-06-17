@@ -17,7 +17,7 @@ namespace SpazioServer.Controllers
         //    Admin a = new Admin();
         //    return s.getAdmins();
         //}
-
+        // api/Admin 
         public IEnumerable<Admin> Get()
         {
             Admin a = new Admin();

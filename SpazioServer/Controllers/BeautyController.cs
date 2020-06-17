@@ -14,8 +14,8 @@ namespace SpazioServer.Controllers
         // GET api/<controller>
         public List<BeautyFilter> Get()
         {
-            BeautyFilter af = new BeautyFilter();
-            return af.getBeautyFilters();
+            BeautyFilter bf = new BeautyFilter();
+            return bf.getBeautyFilters();
         }
         // GET api/<controller>/5
         public string Get(int id)
