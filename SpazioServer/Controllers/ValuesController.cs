@@ -28,14 +28,13 @@ namespace SpazioServer.Controllers
         {
         }
 
-        [HttpGet]
-        [Route("api/SpaceData/grades")]
-
-        public Dictionary<string,int> GetGrades()
-        {
-            DBServices dbs = new DBServices();
-            return dbs.getGrades();
-        }
+        //[HttpGet]
+        //[Route("api/SpaceData/grades")]
+        //public Dictionary<string,int> GetGrades()
+        //{
+        //    DBServices dbs = new DBServices();
+        //    return dbs.getGrades();
+        //}
         // PUT api/values/5
         public void Put(int id, [FromBody]string value)
         {

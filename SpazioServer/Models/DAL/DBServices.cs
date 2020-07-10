@@ -740,7 +740,10 @@ public class DBServices
         }
         try
         {
-            string selectSTR = "SELECT TOP 5 Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate Order by UploadDate Desc";
+            string selectSTR = @"SELECT TOP 5 Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits, Latitude, Longitude 
+FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId 
+group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate, Latitude, Longitude  
+Order by UploadDate Desc;";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
             while (dr.Read())
@@ -766,6 +769,22 @@ public class DBServices
                 s.UserEmail = (string)dr["FKEmail"];
                 s.Description = (string)dr["Description"];
                 s.TermsOfUse = (string)dr["TermsOfUse"];
+                if (dr["Latitude"] == DBNull.Value)
+                { //in case there is not location
+                    s.Latitude = 0;
+                }
+                else
+                {
+                    s.Latitude = Convert.ToDouble(dr["Latitude"]);
+                }
+                if (dr["Longitude"] == DBNull.Value)
+                { //in case there is not location
+                    s.Longitude = 0;
+                }
+                else
+                {
+                    s.Longitude = Convert.ToDouble(dr["Longitude"]);
+                }
                 if (dr["Rank"] == DBNull.Value)
                 { //in case there is not ratings to space yet
                     s.Rank = 3.499;
@@ -809,8 +828,13 @@ public class DBServices
         try
         {
 
-            string selectSTR2 = "SELECT SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId Where FKEmail = '" + userEmail + "' group by SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate Order by UploadDate Desc";
-            string selectSTR = "SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId Where FKEmail = '" + userEmail + "' group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate Order by UploadDate Desc";
+            //string selectSTR2 = "SELECT SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId Where FKEmail = '" + userEmail + "' group by SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate Order by UploadDate Desc";
+
+            string selectSTR = @"SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits, Latitude, Longitude 
+FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId 
+Where FKEmail = 'zaki@gmail.com'
+group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate, Latitude, Longitude 
+Order by UploadDate Desc;";
 
             SqlCommand cmd = new SqlCommand(selectSTR, con);
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
@@ -837,6 +861,22 @@ public class DBServices
                 s.UserEmail = (string)dr["FKEmail"];
                 s.Description = (string)dr["Description"];
                 s.TermsOfUse = (string)dr["TermsOfUse"];
+                if (dr["Latitude"] == DBNull.Value)
+                { //in case there is not location
+                    s.Latitude = 0;
+                }
+                else
+                {
+                    s.Latitude = Convert.ToDouble(dr["Latitude"]);
+                }
+                if (dr["Longitude"] == DBNull.Value)
+                { //in case there is not location
+                    s.Longitude = 0;
+                }
+                else
+                {
+                    s.Longitude = Convert.ToDouble(dr["Longitude"]);
+                }
                 if (dr["Rank"] == DBNull.Value)
                 { //in case there is not ratings to space yet
                     s.Rank = 3.499;
@@ -892,8 +932,9 @@ public class DBServices
             StringBuilder sb = new StringBuilder();
             // use a string builder to create the dynamic string
             string command;
-            sb.AppendFormat("WHERE Spaces_2020.SpaceId={0} group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate Order by UploadDate Desc", id.ToString());
-            String prefix = "SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId ";
+            sb.AppendFormat("WHERE Spaces_2020.SpaceId={0} group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate, Latitude, Longitude  Order by UploadDate Desc", id.ToString());
+            String prefix = @"SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits, Latitude, Longitude 
+FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId ";
 
             command = prefix + sb.ToString();
 
@@ -923,6 +964,22 @@ public class DBServices
                 s.UserEmail = (string)dr["FKEmail"];
                 s.Description = (string)dr["Description"];
                 s.TermsOfUse = (string)dr["TermsOfUse"];
+                if (dr["Latitude"] == DBNull.Value)
+                { //in case there is not location
+                    s.Latitude = 0;
+                }
+                else
+                {
+                    s.Latitude = Convert.ToDouble(dr["Latitude"]);
+                }
+                if (dr["Longitude"] == DBNull.Value)
+                { //in case there is not location
+                    s.Longitude = 0;
+                }
+                else
+                {
+                    s.Longitude = Convert.ToDouble(dr["Longitude"]);
+                }
                 if (dr["Rank"] == DBNull.Value)
                 { //in case there is not ratings to space yet
                     s.Rank = 3.499;
@@ -969,8 +1026,8 @@ public class DBServices
             StringBuilder sb = new StringBuilder();
             // use a string builder to create the dynamic string
             string command;
-            sb.AppendFormat("WHERE Field like '{0}' and City like '{1}' and  Street like '{2}'  and  Number like '{3}'  group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate Order by Rank DESC, SpaceName ASC", isEmpty(field), isEmpty(city), isEmpty(street), isEmpty(number));
-            String prefix = "SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId ";
+            sb.AppendFormat("WHERE Field like '{0}' and City like '{1}' and  Street like '{2}'  and  Number like '{3}'  group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate,Latitude,Longitude Order by Rank DESC, SpaceName ASC", isEmpty(field), isEmpty(city), isEmpty(street), isEmpty(number));
+            String prefix = "SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits,Latitude,Longitude FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId ";
             command = prefix + sb.ToString();
 
             string selectSTR = command;
@@ -999,6 +1056,25 @@ public class DBServices
                 s.UserEmail = (string)dr["FKEmail"];
                 s.Description = (string)dr["Description"];
                 s.TermsOfUse = (string)dr["TermsOfUse"];
+
+                if (dr["Latitude"] == DBNull.Value)
+                { //in case there is not location
+                    s.Latitude = 0;
+                }
+                else
+                {
+                    s.Latitude = Convert.ToDouble(dr["Latitude"]);
+                }
+                if (dr["Longitude"] == DBNull.Value)
+                { //in case there is not location
+                    s.Longitude = 0;
+                }
+                else
+                {
+                    s.Longitude = Convert.ToDouble(dr["Longitude"]);
+                }
+
+
                 if (dr["Rank"] == DBNull.Value) { //in case there is not ratings to space yet
                     s.Rank = 3.499;
                 }
@@ -1151,8 +1227,8 @@ public class DBServices
         string format = "yyyy-MM-dd HH:mm:ss";
         DateTime time = DateTime.Now;
 
-        sb.AppendFormat("Values('{0}', '{1}' , {2}, '{3}','{4}', '{5}' , {6}, '{7}','{8}', '{9}' ,'{10}', '{11}','{12}', '{13}' ,'{14}', '{15}', '{16}', '{17}', {18},'{19}')", space.Name, space.Field, space.Price, space.City, space.Street, space.Number, space.Capabillity, space.Bank, space.Branch, space.Imageurl1, space.Imageurl2, space.Imageurl3, space.Imageurl4, space.Imageurl5, space.AccountNumber, space.UserEmail, space.Description, space.TermsOfUse, space.Rank, time.ToString(format));
-        String prefix = "INSERT INTO Spaces_2020" + "([SpaceName] ,[Field] ,[Price],[City],[Street] ,[Number],[Capabillity] ,[Bank] ,[Branch]  ,[Image1]  ,[Image2],[Image3],[Image4],[Image5],[AccountNumber],[FKEmail],[Description],[TermsOfUse],[Rank], [UploadDate]) OUTPUT Inserted.SpaceId ";
+        sb.AppendFormat("Values('{0}', '{1}' , {2}, '{3}','{4}', '{5}' , {6}, '{7}','{8}', '{9}' ,'{10}', '{11}','{12}', '{13}' ,'{14}', '{15}', '{16}', '{17}', {18},'{19}',{20},{21})", space.Name, space.Field, space.Price, space.City, space.Street, space.Number, space.Capabillity, space.Bank, space.Branch, space.Imageurl1, space.Imageurl2, space.Imageurl3, space.Imageurl4, space.Imageurl5, space.AccountNumber, space.UserEmail, space.Description, space.TermsOfUse, space.Rank, time.ToString(format), space.Latitude, space.Longitude);
+        String prefix = "INSERT INTO Spaces_2020" + "([SpaceName] ,[Field] ,[Price],[City],[Street] ,[Number],[Capabillity] ,[Bank] ,[Branch]  ,[Image1]  ,[Image2],[Image3],[Image4],[Image5],[AccountNumber],[FKEmail],[Description],[TermsOfUse],[Rank], [UploadDate],[Latitude], [Longitude]) OUTPUT Inserted.SpaceId ";
         command = prefix + sb.ToString();
 
         return command;
@@ -2632,7 +2708,9 @@ public class DBServices
         }
         try
         {
-            string selectSTR = "SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate Order by UploadDate Desc";
+            string selectSTR = @"SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits, Latitude, Longitude 
+FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate, Latitude, Longitude 
+Order by UploadDate Desc;";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
             while (dr.Read())
@@ -2658,6 +2736,22 @@ public class DBServices
                 s.UserEmail = (string)dr["FKEmail"];
                 s.Description = (string)dr["Description"];
                 s.TermsOfUse = (string)dr["TermsOfUse"];
+                if (dr["Latitude"] == DBNull.Value)
+                { //in case there is not location
+                    s.Latitude = 0;
+                }
+                else
+                {
+                    s.Latitude = Convert.ToDouble(dr["Latitude"]);
+                }
+                if (dr["Longitude"] == DBNull.Value)
+                { //in case there is not location
+                    s.Longitude = 0;
+                }
+                else
+                {
+                    s.Longitude = Convert.ToDouble(dr["Longitude"]);
+                }
                 if (dr["Rank"] == DBNull.Value)
                 { //in case there is not ratings to space yet
                     s.Rank = 3.499;
@@ -4108,16 +4202,14 @@ public class DBServices
 
             // use a string builder to create the dynamic string
             string selectSTR = @"select COUNT(Id) as Counter,
-AVG(minPrice) as minPriceAvg,
-AVG(maxPrice) as maxPriceAvg,
-AVG(Rating) as RatingAvg,
-AVG(MaxDistance) as MaxDistanceAvg,
-cast(cast(avg(cast(CAST(StartTime as datetime) as float)) as datetime) as time(0)) AvgStartTime,
-cast(cast(avg(cast(CAST(EndTime as datetime) as float)) as datetime) as time(0)) AvgEndTime,
-/*Cast(LTRIM(DATEDIFF(MINUTE, 0, StartTime)) as int) as AvgStartTimeMinutes,
-Cast(LTRIM(DATEDIFF(MINUTE, 0, EndTime)) as int) as AvgEndTimeMinutes,*/
-AVG((DATEDIFF(MINUTE, 0, StartTime))) as AvgStartTimeMinutes,
-AVG((DATEDIFF(MINUTE, 0, EndTime))) as AvgEndTimeMinutes,
+ISNULL(AVG(minPrice), 0) as minPriceAvg,
+ISNULL(AVG(maxPrice), 0) as maxPriceAvg,
+ISNULL(AVG(Rating), 0) as RatingAvg,
+ISNULL(AVG(MaxDistance), 0) as MaxDistanceAvg,
+ISNULL(cast(cast(avg(cast(CAST(StartTime as datetime) as float)) as datetime) as time(0)), '') as AvgStartTime,
+ISNULL(cast(cast(avg(cast(CAST(EndTime as datetime) as float)) as datetime) as time(0)), '') as AvgEndTime,
+ISNULL(AVG((DATEDIFF(MINUTE, 0, StartTime))), 0) as AvgStartTimeMinutes,
+ISNULL(AVG((DATEDIFF(MINUTE, 0, EndTime))), 0) as AvgEndTimeMinutes,
 count(nullif([Parking], 'false')) as ParkingCounter,
 count(nullif([Toilet], 'false')) as ToiletCounter,
 count(nullif([Kitchen], 'false')) as KitchenCounter,
@@ -4132,11 +4224,11 @@ count(nullif([Guitar], 'false')) as GuitarCounter,
 count(nullif([Drum], 'false')) as DrumCounter,
 count(nullif([Speaker], 'false')) as SpeakerCounter,
 count(nullif([PottersWheel], 'false')) as PottersWheelCounter,
-AVG(minCapacity) as minCapacityAvg,
-AVG(maxCapacity) as maxCapacityAvg
+ISNULL(AVG(minCapacity), 0) as minCapacityAvg,
+ISNULL(AVG(maxCapacity), 0) as maxCapacityAvg
 
 from ArtFilters_2020
-where DATEDIFF(D, [FilterDate], GETDATE())  < 14 ";
+where DATEDIFF(D, [FilterDate], GETDATE())  < 14  ";
 
             //where DATEDIFF(D, [FilterDate], GETDATE())  < 14 "; #TODO 
 
@@ -4258,8 +4350,8 @@ count(nullif([ReceptionAreaSeatingandDecor], 'false')) as ReceptionAreaSeatingan
 count(nullif([LaserHairRemoval], 'false')) as LaserHairRemovalCounter,
 count(nullif([PedicureManicure], 'false')) as PedicureManicureCounter,
 count(nullif([HairColoringKit], 'false')) as HairColoringKitCounter,
-AVG(minCapacity) as minCapacityAvg,
-AVG(maxCapacity) as maxCapacityAvg
+ISNULL(AVG(minCapacity), 0) as minCapacityAvg,
+ISNULL(AVG(maxCapacity), 0) as maxCapacityAvg
 
 from BeautyFilters_2020
 where DATEDIFF(D, [FilterDate], GETDATE())  < 14 ";
@@ -4362,14 +4454,14 @@ where DATEDIFF(D, [FilterDate], GETDATE())  < 14 ";
 
             // use a string builder to create the dynamic string
             string selectSTR = @"select COUNT(Id) as Counter,
-AVG(minPrice) as minPriceAvg,
-AVG(maxPrice) as maxPriceAvg,
-AVG(Rating) as RatingAvg,
-AVG(MaxDistance) as MaxDistanceAvg,
-cast(cast(avg(cast(CAST(StartTime as datetime) as float)) as datetime) as time(0)) AvgStartTime,
-cast(cast(avg(cast(CAST(EndTime as datetime) as float)) as datetime) as time(0)) AvgEndTime,
-AVG((DATEDIFF(MINUTE, 0, StartTime))) as AvgStartTimeMinutes,
-AVG((DATEDIFF(MINUTE, 0, EndTime))) as AvgEndTimeMinutes,
+ISNULL(AVG(minPrice), 0) as minPriceAvg,
+ISNULL(AVG(maxPrice), 0) as maxPriceAvg,
+ISNULL(AVG(Rating), 0) as RatingAvg,
+ISNULL(AVG(MaxDistance), 0) as MaxDistanceAvg,
+ISNULL(cast(cast(avg(cast(CAST(StartTime as datetime) as float)) as datetime) as time(0)), '') as AvgStartTime,
+ISNULL(cast(cast(avg(cast(CAST(EndTime as datetime) as float)) as datetime) as time(0)), '') as AvgEndTime,
+ISNULL(AVG((DATEDIFF(MINUTE, 0, StartTime))), 0) as AvgStartTimeMinutes,
+ISNULL(AVG((DATEDIFF(MINUTE, 0, EndTime))), 0) as AvgEndTimeMinutes,
 count(nullif([Parking], 'false')) as ParkingCounter,
 count(nullif([Toilet], 'false')) as ToiletCounter,
 count(nullif([Kitchen], 'false')) as KitchenCounter,
@@ -4383,11 +4475,13 @@ count(nullif([StationaryBicycle], 'false')) as StationaryBicycleCounter,
 count(nullif([Bench], 'false')) as BenchCounter,
 count(nullif([Dumbells], 'false')) as DumbellsCounter,
 count(nullif(Barbell, 'false')) as BarbellCounter,
-AVG(minCapacity) as minCapacityAvg,
-AVG(maxCapacity) as maxCapacityAvg
+
+ISNULL(AVG(minCapacity), 0) as minCapacityAvg,
+ISNULL(AVG(maxCapacity), 0) as maxCapacityAvg
 
 from SportFilters_2020
-where DATEDIFF(D, [FilterDate], GETDATE())  < 14 ";
+where DATEDIFF(D, [FilterDate], GETDATE())  < 14 
+";
 
             //where DATEDIFF(D, [FilterDate], GETDATE())  < 14 "; #TODO 
 
@@ -4683,7 +4777,7 @@ where Email='" + userEmail + "'";
             StringBuilder sb = new StringBuilder();
 
             // use a string builder to create the dynamic string
-            string selectSTR = @"select AVG(Rating) as RatingAvg 
+            string selectSTR = @"select ISNULL(AVG(Rating),0) as RatingAvg 
 from " + field + @"Filters_2020
 where DATEDIFF(D, [FilterDate], GETDATE())  < 14 ";
 

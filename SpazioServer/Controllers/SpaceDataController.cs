@@ -132,15 +132,6 @@ namespace SpazioServer.Controllers
             //this.comments.Add("testincomments");
             //}
 
-
-            double priceAVG = (Data["minPriceAvg"] + Data["maxPriceAvg"] / 2.0);
-            SpaceGrades["PriceGrade"] = ((s.Space.Price - (priceAVG)) / 10) * (Grades["Price"]) * (-1);
-            Grade += ((s.Space.Price - (priceAVG)) / 10) * (Grades["Price"]) * (-1);
-
-            double capacityAVG = (Data["minCapacityAvg"] + Data["maxCapacityAvg"] / 2.0);
-            SpaceGrades["CapacityGrade"] = ((Convert.ToDouble(s.Space.Capabillity) - (capacityAVG)) / 10) * (Grades["Capacity"]);
-            Grade += ((Convert.ToDouble(s.Space.Capabillity) - (capacityAVG)) / 10) * (Grades["Capacity"]);
-
             double avgrating = 0;
             avgrating = dbs.readFiltersDataRating(s.Space.Field); // relate to average or not? #TODO
             if (s.Space.Rank != 3.499)
@@ -158,128 +149,143 @@ namespace SpazioServer.Controllers
             SpaceGrades["ConversionGrade"] = conversionRate * Grades["Conversion"];
             Grade += conversionRate * Grades["Conversion"];
 
+            if (Data["Counter"] !=0)
+            {
+                double priceAVG = (Data["minPriceAvg"] + Data["maxPriceAvg"] / 2.0);
+                SpaceGrades["PriceGrade"] = ((s.Space.Price - (priceAVG)) / 10) * (Grades["Price"]) * (-1);
+                Grade += ((s.Space.Price - (priceAVG)) / 10) * (Grades["Price"]) * (-1);
 
-            if (s.Facility.Toilet)
-            {
-                SpaceGrades["ToiletGrade"] = Grades["Facility"] * Data["ToiletCounter"] / Data["Counter"];
-                Grade += Grades["Facility"] * Data["ToiletCounter"] / Data["Counter"];
-            }
-            if (s.Facility.Parking)
-            {
-                SpaceGrades["ParkingGrade"] = Grades["Facility"] * Data["ToiletCounter"] / Data["Counter"];
-                Grade += Grades["Facility"] * Data["ParkingCounter"] / Data["Counter"];
-            }
-            if (s.Facility.Kitchen)
-            {
-                SpaceGrades["KitchenGrade"] = Grades["Facility"] * Data["KitchenCounter"] / Data["Counter"];
-                Grade += Grades["Facility"] * Data["KitchenCounter"] / Data["Counter"];
-            }
-            if (s.Facility.Intercom)
-            {
-                SpaceGrades["IntercomGrade"] = Grades["Facility"] * Data["KitchenCounter"] / Data["Counter"];
-                Grade += Grades["Facility"] * Data["IntercomCounter"] / Data["Counter"];
-            }
-            if (s.Facility.Accessible)
-            {
-                Grade += Grades["Facility"] * Data["AccessibleCounter"] / Data["Counter"];
-                SpaceGrades["AccessibleGrade"] = Grades["Facility"] * Data["AccessibleCounter"] / Data["Counter"];
+                double capacityAVG = (Data["minCapacityAvg"] + Data["maxCapacityAvg"] / 2.0);
+                SpaceGrades["CapacityGrade"] = ((Convert.ToDouble(s.Space.Capabillity) - (capacityAVG)) / 10) * (Grades["Capacity"]);
+                Grade += ((Convert.ToDouble(s.Space.Capabillity) - (capacityAVG)) / 10) * (Grades["Capacity"]);
 
-            }
-            if (s.Facility.Wifi)
-            {
-                Grade += Grades["Facility"] * Data["WiFiCounter"] / Data["Counter"];
-                SpaceGrades["WifiGrade"] = Grades["Facility"] * Convert.ToDouble(Data["WiFiCounter"]) / Data["Counter"];
-
-            }
-            if (s.Facility.AirCondition)
-            {
-                Grade += Grades["Facility"] * Data["AirConditionCounter"] / Data["Counter"];
-                SpaceGrades["AirConditionGrade"] = Grades["Facility"] * Data["AirConditionCounter"] / Data["Counter"];
-
-            }
-
-            for (int i = 0; i < s.Equipment.Length; i++)
-            {
-                if (s.Equipment[i].Name == "TRX")
-                {
-                    SpaceGrades["TRXGrade"] = Convert.ToDouble(Grades["Equipment"]) * Data["TRXCounter"] / Data["Counter"];
-                    Grade += Convert.ToDouble(Grades["Equipment"]) * Data["TRXCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "Treadmill")
-                {
-                    Grade += Convert.ToDouble(Grades["Equipment"]) * Data["TreadmillCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "Stationary bicycle")
-                {
-                    Grade += Convert.ToDouble(Grades["Equipment"]) * Data["StationaryBicycleCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "Bench")
-                {
-                    Grade += Convert.ToDouble(Grades["Equipment"]) * Data["BenchCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "Dumbells")
-                {
-                    Grade += Convert.ToDouble(Grades["Equipment"]) * Data["DumbellsCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "Barbell")
-                {
-                    Grade += Convert.ToDouble(Grades["Equipment"]) * Data["BarbellCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "Dryers")
-                {
-                    Grade += Convert.ToDouble(Grades["Equipment"]) * Data["DryersCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "Nail Polish Racks")
-                {
-                    Grade += Convert.ToDouble(Grades["Equipment"]) * Data["NailPolishRacksCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "Reception Area Seating and Decor")
-                {
-                    Grade += Convert.ToDouble(Grades["Equipment"]) * Data["ReceptionAreaSeatingandDecorCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "Laser Hair Removal")
-                {
-                    Grade += Convert.ToDouble(Grades["Equipment"]) * Data["LaserHairRemovalCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "Barbell")
-                {
-                    Grade += Convert.ToDouble(Grades["Equipment"]) * Data["BarbellCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "PedicureManicure")
-                {
-                    Grade += Convert.ToDouble(Grades["Equipment"]) * Data["PedicureManicureCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "Hair Coloring Kit")
-                {
-                    Grade += Convert.ToDouble(Grades["Equipment"]) * Data["HairColoringKitCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "Canvas")
-                {
-                    Grade += Convert.ToDouble(Grades["Equipment"]) * Data["CanvasCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "Green Screen")
-                {
-                    Grade += Convert.ToDouble(Grades["Equipment"]) * Data["GreenScreenCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "Potter's Wheel")
-                {
-                    Grade += Grades["Equipment"] * Data["PottersWheelCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "Guitar")
-                {
-                    Grade += Grades["Equipment"] * Data["GuitarCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "Drum")
-                {
-                    Grade += Grades["Equipment"] * Data["DrumCounter"] / Data["Counter"];
-                }
-                if (s.Equipment[i].Name == "Speaker")
-                {
-                    Grade += Grades["Equipment"] * Data["SpeakerCounter"] / Data["Counter"];
-                }
+                
 
 
+                if (s.Facility.Toilet)
+                {
+                    SpaceGrades["ToiletGrade"] = Grades["Facility"] * Data["ToiletCounter"] / Data["Counter"];
+                    Grade += Grades["Facility"] * Data["ToiletCounter"] / Data["Counter"];
+                }
+                if (s.Facility.Parking)
+                {
+                    SpaceGrades["ParkingGrade"] = Grades["Facility"] * Data["ToiletCounter"] / Data["Counter"];
+                    Grade += Grades["Facility"] * Data["ParkingCounter"] / Data["Counter"];
+                }
+                if (s.Facility.Kitchen)
+                {
+                    SpaceGrades["KitchenGrade"] = Grades["Facility"] * Data["KitchenCounter"] / Data["Counter"];
+                    Grade += Grades["Facility"] * Data["KitchenCounter"] / Data["Counter"];
+                }
+                if (s.Facility.Intercom)
+                {
+                    SpaceGrades["IntercomGrade"] = Grades["Facility"] * Data["KitchenCounter"] / Data["Counter"];
+                    Grade += Grades["Facility"] * Data["IntercomCounter"] / Data["Counter"];
+                }
+                if (s.Facility.Accessible)
+                {
+                    Grade += Grades["Facility"] * Data["AccessibleCounter"] / Data["Counter"];
+                    SpaceGrades["AccessibleGrade"] = Grades["Facility"] * Data["AccessibleCounter"] / Data["Counter"];
+
+                }
+                if (s.Facility.Wifi)
+                {
+                    Grade += Grades["Facility"] * Data["WiFiCounter"] / Data["Counter"];
+                    SpaceGrades["WifiGrade"] = Grades["Facility"] * Convert.ToDouble(Data["WiFiCounter"]) / Data["Counter"];
+
+                }
+                if (s.Facility.AirCondition)
+                {
+                    Grade += Grades["Facility"] * Data["AirConditionCounter"] / Data["Counter"];
+                    SpaceGrades["AirConditionGrade"] = Grades["Facility"] * Data["AirConditionCounter"] / Data["Counter"];
+
+                }
+
+                for (int i = 0; i < s.Equipment.Length; i++)
+                {
+                    if (s.Equipment[i].Name == "TRX")
+                    {
+                        SpaceGrades["TRXGrade"] = Convert.ToDouble(Grades["Equipment"]) * Data["TRXCounter"] / Data["Counter"];
+                        Grade += Convert.ToDouble(Grades["Equipment"]) * Data["TRXCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "Treadmill")
+                    {
+                        Grade += Convert.ToDouble(Grades["Equipment"]) * Data["TreadmillCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "Stationary bicycle")
+                    {
+                        Grade += Convert.ToDouble(Grades["Equipment"]) * Data["StationaryBicycleCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "Bench")
+                    {
+                        Grade += Convert.ToDouble(Grades["Equipment"]) * Data["BenchCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "Dumbells")
+                    {
+                        Grade += Convert.ToDouble(Grades["Equipment"]) * Data["DumbellsCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "Barbell")
+                    {
+                        Grade += Convert.ToDouble(Grades["Equipment"]) * Data["BarbellCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "Dryers")
+                    {
+                        Grade += Convert.ToDouble(Grades["Equipment"]) * Data["DryersCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "Nail Polish Racks")
+                    {
+                        Grade += Convert.ToDouble(Grades["Equipment"]) * Data["NailPolishRacksCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "Reception Area Seating and Decor")
+                    {
+                        Grade += Convert.ToDouble(Grades["Equipment"]) * Data["ReceptionAreaSeatingandDecorCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "Laser Hair Removal")
+                    {
+                        Grade += Convert.ToDouble(Grades["Equipment"]) * Data["LaserHairRemovalCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "Barbell")
+                    {
+                        Grade += Convert.ToDouble(Grades["Equipment"]) * Data["BarbellCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "PedicureManicure")
+                    {
+                        Grade += Convert.ToDouble(Grades["Equipment"]) * Data["PedicureManicureCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "Hair Coloring Kit")
+                    {
+                        Grade += Convert.ToDouble(Grades["Equipment"]) * Data["HairColoringKitCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "Canvas")
+                    {
+                        Grade += Convert.ToDouble(Grades["Equipment"]) * Data["CanvasCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "Green Screen")
+                    {
+                        Grade += Convert.ToDouble(Grades["Equipment"]) * Data["GreenScreenCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "Potter's Wheel")
+                    {
+                        Grade += Grades["Equipment"] * Data["PottersWheelCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "Guitar")
+                    {
+                        Grade += Grades["Equipment"] * Data["GuitarCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "Drum")
+                    {
+                        Grade += Grades["Equipment"] * Data["DrumCounter"] / Data["Counter"];
+                    }
+                    if (s.Equipment[i].Name == "Speaker")
+                    {
+                        Grade += Grades["Equipment"] * Data["SpeakerCounter"] / Data["Counter"];
+                    }
+
+
+                }
             }
+
+           
             double totalGrade = 0;
             foreach (KeyValuePair<string, double> item in SpaceGrades)
             {
@@ -895,7 +901,6 @@ namespace SpazioServer.Controllers
 
         [HttpGet]
         [Route("api/SpaceData/grades")]
-
         public Dictionary<int, Dictionary<string, double>> GetGrades()
         {
             Dictionary<int, Dictionary<string, double>> spaceGrades = new Dictionary<int, Dictionary<string, double>>();
