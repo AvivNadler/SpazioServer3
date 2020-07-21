@@ -52,10 +52,11 @@ namespace SpazioServer.Controllers
         [Route("api/User/{id?}")]
         public User Put(int id, [FromBody]User user)
         {
-            user.updateUser();
+            user.updateUser(user);
             return user;
 
         }
+
         [HttpPut]
         [Route("api/User/statusupdate/{id}")]
         public int Put(int id)
@@ -64,7 +65,16 @@ namespace SpazioServer.Controllers
             return u.updateStatus(id); 
 
         }
-        
+
+        [HttpPut]
+        [Route("api/User/cancelpremium/{id}")]
+        public int Put2(int id)
+        {
+            User u = new User();
+            return u.updateCancelPremium(id);
+
+        }
+
 
         // DELETE api/<controller>/5
         public void Delete(int id)

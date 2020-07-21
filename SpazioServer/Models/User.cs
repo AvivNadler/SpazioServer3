@@ -78,7 +78,13 @@ namespace SpazioServer.Models
             int numAffected = dbs.updateUserStatus(id);
             return numAffected;
         }
-        
+        public int updateCancelPremium(int id)
+        {
+            DBServices dbs = new DBServices();
+            int numAffected = dbs.updateCancelUserPremium(id);
+            return numAffected;
+        }
+
         public int insert()
         {
             DBServices dbs = new DBServices();
@@ -93,10 +99,10 @@ namespace SpazioServer.Models
             return dbs.readFavouritesSpaces(id);
         }
 
-        public int updateUser()
+        public int updateUser(User user)
         {
             DBServices dbs = new DBServices();
-            int numAffected = dbs.updateUserDetails(this);
+            int numAffected = dbs.updateUserDetails(user);
             return numAffected;
         }
 

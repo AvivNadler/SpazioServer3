@@ -44,7 +44,7 @@ namespace SpazioServer.Controllers
                         tempAvail.Add(item2.Split('-')[0].Split(':')[0] + ":" + item2.Split('-')[0].Split(':')[1] + "-" + item2.Split('-')[1].Split(':')[0] + ":" + item2.Split('-')[1].Split(':')[1]);
                     }
                     s.Realavailability = tempAvail;
-                    double grade = GradeCalc3("",s);
+                    double grade = GradeCalc3("", s);
                     s.Space.Grade = grade;
                     list.Add(s);
                 }
@@ -55,7 +55,7 @@ namespace SpazioServer.Controllers
             return SortedList;
         }
 
-        public double GradeCalc(string temp,SpaceData s)
+        public double GradeCalc(string temp, SpaceData s)
         {
             //PREMIUM
             DBServices dbs = new DBServices();
@@ -149,7 +149,7 @@ namespace SpazioServer.Controllers
             SpaceGrades["ConversionGrade"] = conversionRate * Grades["Conversion"];
             Grade += conversionRate * Grades["Conversion"];
 
-            if (Data["Counter"] !=0)
+            if (Data["Counter"] != 0)
             {
                 double priceAVG = (Data["minPriceAvg"] + Data["maxPriceAvg"] / 2.0);
                 SpaceGrades["PriceGrade"] = ((s.Space.Price - (priceAVG)) / 10) * (Grades["Price"]) * (-1);
@@ -159,7 +159,7 @@ namespace SpazioServer.Controllers
                 SpaceGrades["CapacityGrade"] = ((Convert.ToDouble(s.Space.Capabillity) - (capacityAVG)) / 10) * (Grades["Capacity"]);
                 Grade += ((Convert.ToDouble(s.Space.Capabillity) - (capacityAVG)) / 10) * (Grades["Capacity"]);
 
-                
+
 
 
                 if (s.Facility.Toilet)
@@ -280,12 +280,13 @@ namespace SpazioServer.Controllers
                     {
                         Grade += Grades["Equipment"] * Data["SpeakerCounter"] / Data["Counter"];
                     }
+                    else { break; }
 
 
                 }
             }
 
-           
+
             double totalGrade = 0;
             foreach (KeyValuePair<string, double> item in SpaceGrades)
             {
@@ -303,7 +304,7 @@ namespace SpazioServer.Controllers
             return Grade;
         }
 
-        public Dictionary<string, double> GradeCalc2(string temp,SpaceData s)
+        public Dictionary<string, double> GradeCalc2(string temp, SpaceData s)
         {
             //PREMIUM
             DBServices dbs = new DBServices();
@@ -505,6 +506,7 @@ namespace SpazioServer.Controllers
                         SpaceGrades["BarbellGrade"] = Convert.ToDouble(Grades["Equipment"]) * Data["BarbellCounter"] / Data["Counter"];
 
                     }
+                    else { break; }
                 }
                 if (s.Space.Field == "Beauty")
                 {
@@ -541,8 +543,8 @@ namespace SpazioServer.Controllers
                     {
                         Grade += Convert.ToDouble(Grades["Equipment"]) * Data["HairColoringKitCounter"] / Data["Counter"];
                         SpaceGrades["Hair Coloring KitGrade"] = Convert.ToDouble(Grades["Equipment"]) * Data["HairColoringKitCounter"] / Data["Counter"];
-
                     }
+                    else { break; }
                 }
                 else
                 {
@@ -576,8 +578,8 @@ namespace SpazioServer.Controllers
                     {
                         Grade += Convert.ToDouble(Grades["Equipment"]) * Data["SpeakerCounter"] / Data["Counter"];
                         SpaceGrades["SpeakerGrade"] = Convert.ToDouble(Grades["Equipment"]) * Data["SpeakerCounter"] / Data["Counter"];
-
                     }
+                    else { break; }
                 }
 
             }
@@ -600,7 +602,7 @@ namespace SpazioServer.Controllers
             //Premium
             return SpaceGrades;
         }
-        public double GradeCalc3(string temp,SpaceData s)
+        public double GradeCalc3(string temp, SpaceData s)
         {
             //PREMIUM
             DBServices dbs = new DBServices();
@@ -799,8 +801,12 @@ namespace SpazioServer.Controllers
                     if (s.Equipment[i].Name == "Barbell")
                     {
                         Grade += Grades["Equipment"] * Convert.ToDouble(Data["BarbellCounter"]) / Data["Counter"];
-                        SpaceGrades["BarbellGrade"] = Convert.ToDouble(Grades["Equipment"]) * Data["BarbellCounter"] / Data["Counter"];
+                        SpaceGrades["BarbellGrade"] = Grades["Equipment"] * Convert.ToDouble(Data["BarbellCounter"]) / Data["Counter"];
 
+                    }
+                    else
+                    {
+                        break;
                     }
                 }
                 if (s.Space.Field == "Beauty")
@@ -840,6 +846,10 @@ namespace SpazioServer.Controllers
                         SpaceGrades["Hair Coloring KitGrade"] = Convert.ToDouble(Grades["Equipment"]) * Data["HairColoringKitCounter"] / Data["Counter"];
 
                     }
+                    else
+                    {
+                        break;
+                    }
                 }
                 else
                 {
@@ -874,6 +884,10 @@ namespace SpazioServer.Controllers
                         Grade += Convert.ToDouble(Grades["Equipment"]) * Data["SpeakerCounter"] / Data["Counter"];
                         SpaceGrades["SpeakerGrade"] = Convert.ToDouble(Grades["Equipment"]) * Data["SpeakerCounter"] / Data["Counter"];
 
+                    }
+                    else
+                    {
+                        break;
                     }
                 }
 
@@ -930,10 +944,10 @@ namespace SpazioServer.Controllers
                         tempAvail.Add(item2.Split('-')[0].Split(':')[0] + ":" + item2.Split('-')[0].Split(':')[1] + "-" + item2.Split('-')[1].Split(':')[0] + ":" + item2.Split('-')[1].Split(':')[1]);
                     }
                     s.Realavailability = tempAvail;
-                    double grade = GradeCalc("",s);
+                    double grade = GradeCalc("", s);
                     s.Space.Grade = grade;
                     list.Add(s);
-                    spaceGrades.Add(s.Space.Id, GradeCalc2("",s));
+                    spaceGrades.Add(s.Space.Id, GradeCalc2("", s));
                 }
 
             }

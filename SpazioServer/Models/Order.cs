@@ -43,6 +43,16 @@ namespace SpazioServer.Models
             DBServices dbs = new DBServices();
             return dbs.readOrders();
         }
+
+
+
+        public List<Order> getOrdersByField(string field)
+        {
+            DBServices dbs = new DBServices();
+            return dbs.readOrdersByField(field);
+        }
+        
+
         public int insert()
         {
             DBServices dbs = new DBServices();

@@ -20,9 +20,17 @@ namespace SpazioServer.Controllers
             return o.getOrders();
         }
 
-      
+        [HttpGet]
+        [Route("api/Order/{field}")]
+        public List<Order> GetByField(string field)
+        {
+            Order o = new Order();
+            return o.getOrdersByField(field);
+        }
+
+
         // GET api/<controller>/5
-       
+
 
         // POST api/<controller>
         public Order Post([FromBody]Order order)

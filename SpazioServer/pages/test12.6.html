@@ -60,7 +60,7 @@
 
             ajaxCall("GET", "../api/SpaceData/AllSpaces", "", getSuccessAllSpaces, getErrorCB);
 
-            ajaxCall("GET", "../api/SpaceData/grades", "", getSuccessSpaceGrades, getErrorCB);
+            //ajaxCall("GET", "../api/SpaceData/grades", "", getSuccessSpaceGrades, getErrorCB);
 
         ajaxCall("GET", "../api/ArtFilter/Data", "", getSuccessArtFilter, getErrorArtFilter);
 
@@ -434,9 +434,8 @@
 
         //ajaxCall("POST", "../api/rating", JSON.stringify(rating) , getSuccessCB, getErrorCB);
 
-
-
-        //ajaxCall("PUT", "../api/User/statusupdate/" + user.Id, "" , getSuccessCB, getErrorCB);
+        
+        
 
         //ajaxCall("GET", "../api/rating", "" , getSuccessCB, getErrorCB);
 
@@ -450,12 +449,17 @@
 
         //ajaxCall("GET", "../api/SpaceData/LastAddedSpaces", "", getSuccessCBLastAddedSpaces, getErrorCBLastAddedSpaces);
 
-        //ajaxCall("DELETE", "../api/space/?id=240", "", getSuccessCBLastAddedSpaces, getErrorCBLastAddedSpaces);
+
+        var deleteSpaceId=283;
+
+        //ajaxCall("DELETE", "../api/space/?id=" + deleteSpaceId, "", getSuccessDeleteSpace, getErrorCB);
 
         //ajaxCall("DELETE", "../api/space/?id=222", "", getSuccessCBLastAddedSpaces, getErrorCBLastAddedSpaces);
 
 
-        
+        function getSuccessDeleteSpace(data) {
+            console.log("Space has been deleted", data);
+        }
 
 
         function getSuccessSportFilter(data) {
@@ -599,16 +603,61 @@
         //ajaxCall("POST", "../api/sportfilter", JSON.stringify(sportfilter) , getSuccessCB, getErrorCB);
 
 
+                       // ajaxCall("GET", "../api/Grade", "" , getSuccessGetGrades, getErrorCB);
 
 
+                                //ajaxCall("GET", "../api/Order/" + field, "" , getSuccessGetGrades, getErrorCB);
 
 
+        function getSuccessGetGrades(data) {
+            console.log("Grades Get", data);
+
+        }
+        var grade = {GradeId:"",Price:3,Capacity:1,Facility:1,Equipment:2,Rating:2,Premium:10,Order:1,Conversion:2,ModifiedDate:""};
+
+               // ajaxCall("POST", "../api/Grade", JSON.stringify(grade) , getSuccessPostGrade, getErrorCB);
+
+        function getSuccessPostGrade(data) {
+            console.log("Grade Post", data);
+
+        }
+
+        var editUser = { "email": "aviron33@gmail.com",
+            "Id": "305",
+            "password": "Avi",
+            "phoneNumber": "0544432121",
+            "photo": "",
+            "rank": "0",
+            "registrationDate": "",
+            "spaceOwner": "0",
+            "userName": "Avi Ron 2",
+            "visits": "0"
+        };
+
+       
+
+       // ajaxCall("PUT", "../api/User/305" , JSON.stringify(editUser), getSuccessEditUser, getErrorCB);
+
+        function getSuccessEditUser(data) {
+            console.log("Edit user", data);
+
+        }
+      // [Route("api/User/{id?}")]
+       // public User Put(int id, [FromBody]User user)
 
 
+        var userEmail = "giladzim1@gmail.com";
+
+       // ajaxCall("GET", "../api/SpaceData/?userEmail=" + userEmail, "", getSuccessMySpaces, getErrorCB);
 
 
-        ajaxCall("GET", "../api/SpaceData/?" + emptyquerystring3, "", getSuccessSearch, getErrorCB);
+       // ajaxCall("GET", "../api/SpaceData/?" + emptyquerystring3, "", getSuccessSearch, getErrorCB);
 
+
+        function getSuccessMySpaces(data) {
+            console.log("My Spaces(" + userEmail + ")", data);
+
+        }
 
         function getSuccessSearch(data) {
             console.log("Search Spaces with emptystring from 11.6.20", data);
@@ -640,11 +689,51 @@
         }
         var Favourite = {userId:4, spaceId:6};
 
-                ajaxCall("POST", "../api/Favourite" , JSON.stringify(Favourite), getSuccessFavourite, getErrorCB);
+                //ajaxCall("POST", "../api/Favourite" , JSON.stringify(Favourite), getSuccessFavourite, getErrorCB);
+
+
+        
+
+                var field1="Art";
+                 ajaxCall("GET", "../api/Order/" + field1, "", getSuccessArtOrders, getErrorCB);
+
+        var field2="Beauty";
+                         //ajaxCall("GET", "../api/Order/" + field2, "", getSuccessBeautyOrders, getErrorCB);
+
+        var field3= "Sport";
+                                 //ajaxCall("GET", "../api/Order/" + field3, "", getSuccessSportOrders, getErrorCB);
+
+
+        function getSuccessArtOrders(data) {
+            console.log("Art Orders:", data);
+        }
+
+        function getSuccessBeautyOrders(data) {
+            console.log("Beauty Orders:", data);
+        }
+        function getSuccessSportOrders(data) {
+            console.log("Sport Orders:", data);
+        }
 
         function getSuccessFavourite(data) {
             console.log("Favourite:", data);
+        }
+        
+        //ajaxCall("GET", "../api/Rating/", "", getSuccessRatings, getErrorCB);
 
+        var idStatusUpdate = 305;
+
+        //ajaxCall("PUT", "../api/User/statusupdate/" + idStatusUpdate, "" , getSuccessPremiumStatusUpdate, getErrorCB);
+
+                //ajaxCall("PUT", "../api/User/cancelpremium/" + idStatusUpdate, "" , getSuccessPremiumStatusUpdate, getErrorCB);
+
+
+        function getSuccessPremiumStatusUpdate(data) {
+            console.log("Premium Status Update Success", data);
+        }
+
+         function getSuccessRatings(data) {
+            console.log("Ratings", data);
         }
 
     </script>

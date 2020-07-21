@@ -172,6 +172,7 @@
     <Compile Include="Controllers\FavouriteController.cs" />
     <Compile Include="Controllers\FieldEqController.cs" />
     <Compile Include="Controllers\FileUploadController.cs" />
+    <Compile Include="Controllers\GradeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\RatingController.cs" />
@@ -197,6 +198,7 @@
     <Compile Include="Models\Favourite.cs" />
     <Compile Include="Models\FieldEq.cs" />
     <Compile Include="Models\Filter.cs" />
+    <Compile Include="Models\Grade.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderData.cs" />
     <Compile Include="Models\Rating.cs" />
