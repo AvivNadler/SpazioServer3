@@ -736,6 +736,69 @@
             console.log("Ratings", data);
         }
 
+
+        var spacedata22 = {
+            space:
+            {
+                "Id": "310",
+                "AccountNumber": "02981694",
+                "Bank": "Leumi",
+                "Branch": "574",
+                "Capabillity": "12",
+                "City": "Haifa",
+                "Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "Field": "Beauty",
+                "Imageurl1": "https://media-cdn.tripadvisor.com/media/photo-s/15/4c/8c/72/gett-s-hair-studio-salon.jpg",
+                "Imageurl2": "https://media-cdn.tripadvisor.com/media/photo-m/1280/14/ff/61/25/getlstd-property-photo.jpg",
+                "Imageurl3": "https://i.pinimg.com/originals/f2/6e/31/f26e31804ed5324bb444b7233491abaa.jpg",
+                "Imageurl4": "https://i.pinimg.com/originals/b8/5a/40/b85a409cd599f522155a381b38b8875e.jpg",
+                "Imageurl5": "",
+                "Name": "Zaki Hair Salon",
+                "Number": "15",
+                "Price": "85.34",
+                "Rank": "3",
+                "Street": "Herzel",
+                "TermsOfUse": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "Uploadtime": "3/20/2020 12:00:00 AM",
+                "UserEmail": "al@gmail.com"
+            },
+            facility:
+            {
+                parking: "true",
+                toilet: "false",
+                kitchen: "true",
+                intercom: "false",
+                accessible: "true",
+                airCondition: "false",
+                wifi: "true",
+                spaceId: "false"
+            },
+            availability:
+           
+                [{ Day: "Sunday", EndTime: "20:00", StartTime: "22:00", FkSpaceId: "", Times: "500-600" }, { Day: "Friday", EndTime: "18:00", StartTime: "23:00", FkSpaceId: "", Times: "300-900" } ]
+            ,
+            equipment:
+            [
+            {
+                "Id": "9",
+                "Name": "Drum",
+                "SpaceId": "8"
+            },
+            {
+                "Id": "10",
+                "Name": "Guitar",
+                "SpaceId": "7"
+            }]
+        };
+
+                ajaxCall("PUT", "../api/spacedata/update/", JSON.stringify(spacedata22) , getSuccessEditSpaceData, getErrorCB);
+
+         function getSuccessEditSpaceData(data) {
+            console.log("Edit Space Data Success", data);
+        }
+        
+
+
     </script>
 </head>
 <body>

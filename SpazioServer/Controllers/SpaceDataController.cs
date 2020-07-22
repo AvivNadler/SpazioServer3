@@ -13,7 +13,7 @@ namespace SpazioServer.Controllers
 {
     public class SpaceDataController : ApiController
     {
-        public List<string> comments = new List<string>();
+        //public List<string> comments = new List<string>();
 
         // GET api/<controller>
         /*  public IEnumerable<string> Get()
@@ -1154,7 +1154,60 @@ namespace SpazioServer.Controllers
             return spaceData;
         }
 
+        // POST api/<controller>
+        [HttpPut]
+        [Route("api/SpaceData/Update/")]
+        public SpaceData Put([FromBody]SpaceData spaceData)
+        {
+            Space s = spaceData.Space;
+            Facility f = spaceData.Facility;
+            Equipment[] e = spaceData.Equipment;
+            WeekAvailability[] wa = spaceData.Availability;
+            DBServices dbs = new DBServices();
 
+            //Availability a = spaceData.Availability;
+
+
+
+            int numaffected = dbs.updateSpace(s);
+
+            f.SpaceId = s.Id;
+
+            //  countertest variabe for test how many rows affected 
+            int countertest = 0;
+            countertest += dbs.update(f);
+
+
+
+
+            //the variables are for debegging
+
+            int equipmentsRowsDelete = dbs.deleteEquipment(s.Id);
+
+            int WeekAvailabilitiesRowsDelete = dbs.deleteWeekAvailabilities(s.Id);
+
+            foreach (Equipment item in e)
+            {
+                item.SpaceId = s.Id;
+                countertest += dbs.insert(item);
+                //dbs.insert(item); test if it can replace the row above??
+            }
+            foreach (WeekAvailability item in wa)
+            {
+                item.FkSpaceId = s.Id; 
+                countertest += dbs.insert(item);
+
+            }
+
+            //test if the user is already a spaceOwner
+            //userType = dbs.userTypeCheckandUpdate(s.UserEmail);
+
+            //e.SpaceId = newSpaceId;
+            //a.SpaceId = newSpaceId;
+            //countertest += dbs.insert(a);
+
+            return spaceData;
+        }
 
         // PUT api/<controller>/5
         public void Put(int id, [FromBody]string value)

@@ -30,6 +30,14 @@ namespace SpazioServer.Controllers
             return grade;
         }
 
+
+        // PUT api/<controller>
+        public Grade Put([FromBody]Grade grade)
+        {
+            grade.update();
+            return grade;
+        }
+
         // PUT api/<controller>/5
         public void Put(int id, [FromBody]string value)
         {

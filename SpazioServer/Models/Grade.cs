@@ -61,5 +61,11 @@ namespace SpazioServer.Models
             int numAffected = dbs.insert(this);
             return numAffected;
         }
+        public int update()
+        {
+            DBServices dbs = new DBServices();
+            int numAffected = dbs.update(this);
+            return numAffected;
+        }
     }
 }

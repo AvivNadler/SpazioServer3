@@ -113,7 +113,8 @@ public class DBServices
         string format = "yyyy-MM-dd HH:mm:ss";
         DateTime time = DateTime.Now;
 
-        sb.AppendFormat("Values('{0}', '{1}' ,'{2}', '{3}','{4}','{5}',{6},{7},'{8}','{9}','{10}')", user.Email, user.Password, user.UserName, user.PhoneNumber, user.Photo, user.SpaceOwner, user.Visits, user.Rank, time.ToString(format),user.SpacePublish,user.Premium);
+        sb.AppendFormat("Values('{0}', '{1}' ,'{2}', '{3}','{4}','{5}',{6},{7},'{8}','{9}','{10}')", user.Email, user.Password, user.UserName,
+            user.PhoneNumber, user.Photo, user.SpaceOwner, user.Visits, user.Rank, time.ToString(format),user.SpacePublish,user.Premium);
         String prefix = "INSERT INTO Users_2020" + "(Email,Password,UserName,PhoneNumber,Photo,SpaceOwner,visits,rank,RegisterationDate,SpacePublish,Premium) ";
         command = prefix + sb.ToString();
 
@@ -813,9 +814,13 @@ public class DBServices
         }
         try
         {
-            string selectSTR = @"SELECT TOP 5 Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits, Latitude, Longitude 
-FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId 
-group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate, Latitude, Longitude  
+            string selectSTR = @"SELECT TOP 5 Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity,
+Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate,
+AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits, Latitude, Longitude 
+FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId
+left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId 
+group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5
+,FKEmail,Description,TermsOfUse,UploadDate, Latitude, Longitude  
 Order by UploadDate Desc;";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
@@ -901,12 +906,19 @@ Order by UploadDate Desc;";
         try
         {
 
-            //string selectSTR2 = "SELECT SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId Where FKEmail = '" + userEmail + "' group by SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate Order by UploadDate Desc";
+            //string selectSTR2 = "SELECT SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1,
+            //Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank FROM Spaces_2020
+            //    left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId Where FKEmail = '" + userEmail + "' 
+            //   group by SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,
+            // Image5,FKEmail,Description,TermsOfUse,UploadDate Order by UploadDate Desc";
 
-            string selectSTR = @"SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits, Latitude, Longitude 
+            string selectSTR = @"SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber,
+Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank
+,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits, Latitude, Longitude 
 FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId 
 Where FKEmail = '" + userEmail +
-@"' group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate, Latitude, Longitude 
+@"' group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,
+Image5,FKEmail,Description,TermsOfUse,UploadDate, Latitude, Longitude 
 Order by UploadDate Desc;";
 
             SqlCommand cmd = new SqlCommand(selectSTR, con);
@@ -1005,8 +1017,12 @@ Order by UploadDate Desc;";
             StringBuilder sb = new StringBuilder();
             // use a string builder to create the dynamic string
             string command;
-            sb.AppendFormat("WHERE Spaces_2020.SpaceId={0} group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate, Latitude, Longitude  Order by UploadDate Desc", id.ToString());
-            String prefix = @"SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits, Latitude, Longitude 
+            sb.AppendFormat("WHERE Spaces_2020.SpaceId={0} group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street," +
+                "Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description," +
+                "TermsOfUse,UploadDate, Latitude, Longitude  Order by UploadDate Desc", id.ToString());
+            String prefix = @"SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity,
+Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate,
+AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits, Latitude, Longitude 
 FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId ";
 
             command = prefix + sb.ToString();
@@ -1099,8 +1115,14 @@ FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.
             StringBuilder sb = new StringBuilder();
             // use a string builder to create the dynamic string
             string command;
-            sb.AppendFormat("WHERE Field like '{0}' and City like '{1}' and  Street like '{2}'  and  Number like '{3}'  group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate,Latitude,Longitude Order by Rank DESC, SpaceName ASC", isEmpty(field), isEmpty(city), isEmpty(street), isEmpty(number));
-            String prefix = "SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits,Latitude,Longitude FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId ";
+            sb.AppendFormat("WHERE Field like '{0}' and City like '{1}' and  Street like '{2}'  and  Number like '{3}'  group by Spaces_2020.SpaceId,SpaceName,Field" +
+                ",Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate," +
+                "Latitude,Longitude Order by Rank DESC, SpaceName ASC", isEmpty(field), isEmpty(city), isEmpty(street), isEmpty(number));
+            String prefix = "SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1," +
+                " Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank" +
+                ",COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits,Latitude,Longitude" +
+                " FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId " +
+                "left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId ";
             command = prefix + sb.ToString();
 
             string selectSTR = command;
@@ -1300,8 +1322,14 @@ FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.
         string format = "yyyy-MM-dd HH:mm:ss";
         DateTime time = DateTime.Now;
 
-        sb.AppendFormat("Values('{0}', '{1}' , {2}, '{3}','{4}', '{5}' , {6}, '{7}','{8}', '{9}' ,'{10}', '{11}','{12}', '{13}' ,'{14}', '{15}', '{16}', '{17}', {18},'{19}',{20},{21})", space.Name, space.Field, space.Price, space.City, space.Street, space.Number, space.Capabillity, space.Bank, space.Branch, space.Imageurl1, space.Imageurl2, space.Imageurl3, space.Imageurl4, space.Imageurl5, space.AccountNumber, space.UserEmail, space.Description, space.TermsOfUse, space.Rank, time.ToString(format), space.Latitude, space.Longitude);
-        String prefix = "INSERT INTO Spaces_2020" + "([SpaceName] ,[Field] ,[Price],[City],[Street] ,[Number],[Capabillity] ,[Bank] ,[Branch]  ,[Image1]  ,[Image2],[Image3],[Image4],[Image5],[AccountNumber],[FKEmail],[Description],[TermsOfUse],[Rank], [UploadDate],[Latitude], [Longitude]) OUTPUT Inserted.SpaceId ";
+        sb.AppendFormat("Values('{0}', '{1}' , {2}, '{3}','{4}', '{5}' , {6}, '{7}','{8}', '{9}' ,'{10}', '{11}'" +
+            ",'{12}', '{13}' ,'{14}', '{15}', '{16}', '{17}', {18},'{19}',{20},{21})", space.Name, space.Field, space.Price,
+            space.City, space.Street, space.Number, space.Capabillity, space.Bank, space.Branch, space.Imageurl1, space.Imageurl2,
+            space.Imageurl3, space.Imageurl4, space.Imageurl5, space.AccountNumber, space.UserEmail, space.Description, space.TermsOfUse,
+            space.Rank, time.ToString(format), space.Latitude, space.Longitude);
+        String prefix = "INSERT INTO Spaces_2020" + "([SpaceName] ,[Field] ,[Price],[City],[Street] ,[Number],[Capabillity]" +
+            " ,[Bank] ,[Branch]  ,[Image1]  ,[Image2],[Image3],[Image4],[Image5],[AccountNumber],[FKEmail],[Description]," +
+            "[TermsOfUse],[Rank], [UploadDate],[Latitude], [Longitude]) OUTPUT Inserted.SpaceId ";
         command = prefix + sb.ToString();
 
         return command;
@@ -1679,6 +1707,54 @@ FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.
             if (con != null)
                 con.Close();
         }
+    }
+    public int update(Facility f)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        String cStr = BuildUpdateCommand(f);
+        // cmd = CreatCommmand(cStr, con);
+        cmd = CreateCommand(cStr, con);
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery();
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+                con.Close();
+        }
+    }
+    private String BuildUpdateCommand(Facility f)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("SET Parking='{0}', Toilet='{1}', Kitchen='{2}', Intercom='{3}' ,Accessible='{4}'," +
+            " AirCondition='{5}', WiFi='{6}' WHERE FKSpaceId={7}", f.Parking, f.Toilet, f.Kitchen, f.Intercom, f.Accessible, f.AirCondition, f.Wifi, f.SpaceId.ToString());
+        String prefix = "UPDATE Facilities_2020 " ;
+        command = prefix + sb.ToString();
+
+        return command;
     }
 
     private String BuildInsertCommand(Facility f)
@@ -2188,7 +2264,8 @@ FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.
 
 
         // use a string builder to create the dynamic string
-        sb.AppendFormat("Values({0}, {1},'{2}','{3}','{4}','{5}', {6})", order.SpaceId.ToString(), order.UserId.ToString(), order.ReservationDate, order.StartHour, order.EndHour, time.ToString(format), order.Price);
+        sb.AppendFormat("Values({0}, {1},'{2}','{3}','{4}','{5}', {6})", order.SpaceId.ToString(), order.UserId.ToString(),
+            order.ReservationDate, order.StartHour, order.EndHour, time.ToString(format), order.Price);
         String prefix = "INSERT INTO Orders_2020 " + "(SpaceId, UserId, ReservationDate, StartHour, EndHour, OrderDate, Price) ";
         command = prefix + sb.ToString();
 
@@ -2835,8 +2912,12 @@ Where [dbo].[Spaces_2020].Field='" + field + "'";
         }
         try
         {
-            string selectSTR = @"SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits, Latitude, Longitude 
-FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate, Latitude, Longitude 
+            string selectSTR = @"SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank,
+Branch, AccountNumber, Image1, Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate,
+AVG(Ratings_2020.TotalRating) as Rank,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits, Latitude, Longitude 
+FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId 
+left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId group by Spaces_2020.SpaceId,SpaceName,Field,Price,City,Street,Number,
+Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate, Latitude, Longitude 
 Order by UploadDate Desc;";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
@@ -3760,7 +3841,8 @@ Order by UploadDate Desc;";
         //string format = "yyyy-MM-dd HH:mm:ss";
         //double totalrating = (r.Attitude + r.Cleanliness + r.EquipmentQuality + r.FacilityQualiy + r.Authenticity) / 5.0;
 
-        sb.AppendFormat("Values({0}, {1},{2}, {3},{4},{5},{6},{7})", r.Attitude.ToString(), r.Cleanliness.ToString(), r.EquipmentQuality.ToString(), r.FacilityQualiy.ToString(), r.Authenticity.ToString(), r.TotalRating.ToString(), r.FKSpaceId.ToString(), r.FKUserId.ToString());
+        sb.AppendFormat("Values({0}, {1},{2}, {3},{4},{5},{6},{7})", r.Attitude.ToString(), r.Cleanliness.ToString(), r.EquipmentQuality.ToString(),
+            r.FacilityQualiy.ToString(), r.Authenticity.ToString(), r.TotalRating.ToString(), r.FKSpaceId.ToString(), r.FKUserId.ToString());
         String prefix = "INSERT INTO Ratings_2020" + "(Attitude, Cleanliness, EquipmentQuality, FacilityQualiy, Authenticity, TotalRating,FKSpaceId,FKUserId) ";
         command = prefix + sb.ToString();
 
@@ -4064,8 +4146,14 @@ Order by UploadDate Desc;";
         string format = "yyyy-MM-dd HH:mm:ss";
         DateTime time = DateTime.Now;
 
-        sb.AppendFormat("Values('{0}',{1}, {2},{3},{4},'{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}',{20},'{21}',{22},{23})", sf.Field, sf.Rating.ToString(), sf.MinPrice.ToString(), sf.MaxPrice.ToString(), sf.MaxDistance.ToString(), sf.StartTime, sf.EndTime, sf.Parking, sf.Toilet, sf.Kitchen, sf.Intercom, sf.Accessible, sf.AirCondition, sf.WiFi, sf.Trx, sf.Treadmill, sf.StationaryBicycle, sf.Bench, sf.Dumbells, sf.Barbell, sf.UserId.ToString(), time.ToString(format), sf.MinCapacity.ToString(), sf.MaxCapacity.ToString());
-        String prefix = "INSERT INTO SportFilters_2020 " + "([Field],[Rating],[minPrice],[maxPrice],[MaxDistance],[StartTime],[EndTime],[Parking],[Toilet],[Kitchen],[Intercom],[Accessible],[AirCondition],[WiFi],[TRX],[Treadmill],[StationaryBicycle],[Bench],[Dumbells] ,[Barbell] ,[FkUserId],[FilterDate],[minCapacity],[maxCapacity]) ";
+        sb.AppendFormat("Values('{0}',{1}, {2},{3},{4},'{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}'," +
+            "'{13}','{14}','{15}','{16}','{17}','{18}','{19}',{20},'{21}',{22},{23})", sf.Field, sf.Rating.ToString(), sf.MinPrice.ToString(),
+            sf.MaxPrice.ToString(), sf.MaxDistance.ToString(), sf.StartTime, sf.EndTime, sf.Parking, sf.Toilet, sf.Kitchen, sf.Intercom,
+            sf.Accessible, sf.AirCondition, sf.WiFi, sf.Trx, sf.Treadmill, sf.StationaryBicycle, sf.Bench, sf.Dumbells, sf.Barbell,
+            sf.UserId.ToString(), time.ToString(format), sf.MinCapacity.ToString(), sf.MaxCapacity.ToString());
+        String prefix = "INSERT INTO SportFilters_2020 " + "([Field],[Rating],[minPrice],[maxPrice],[MaxDistance],[StartTime],[EndTime]," +
+            "[Parking],[Toilet],[Kitchen],[Intercom],[Accessible],[AirCondition],[WiFi],[TRX],[Treadmill],[StationaryBicycle],[Bench]," +
+            "[Dumbells] ,[Barbell] ,[FkUserId],[FilterDate],[minCapacity],[maxCapacity]) ";
         command = prefix + sb.ToString();
 
         return command;
@@ -4903,8 +4991,70 @@ order by ModifiedDate desc;";
 
         StringBuilder sb = new StringBuilder();
         // use a string builder to create the dynamic string
-        sb.AppendFormat("Values({0}, {1},{2}, {3},{4}, {5},{6}, {7},'{8}')", Grade.Price, Grade.Capacity, Grade.Facility, Grade.Equipment, Grade.Rating, Grade.Premium, Grade.Order, Grade.Conversion, time.ToString(format));
+        sb.AppendFormat("Values({0}, {1},{2}, {3},{4}, {5},{6}, {7},'{8}')", Grade.Price, Grade.Capacity, Grade.Facility, Grade.Equipment, Grade.Rating,
+            Grade.Premium, Grade.Order, Grade.Conversion, time.ToString(format));
         String prefix = "INSERT INTO Grades_2020";
+        command = prefix + sb.ToString();
+
+        return command;
+    }
+
+    public int update(Grade Grade)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        String cStr = BuildUpdateCommand(Grade);
+        // cmd = CreatCommmand(cStr, con);
+        cmd = CreateCommand(cStr, con);
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery();
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+                con.Close();
+        }
+    }
+
+    private String BuildUpdateCommand(Grade Grade)
+    {
+        String command;
+        string format = "yyyy-MM-dd HH:mm:ss";
+        DateTime time = DateTime.Now;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat(@"SET [Price] = {0}
+      ,[Capacity] =  {1}
+      ,[Facility] ={2}
+      ,[Equipment] = {3}
+      ,[Rating] = {4}
+      ,[Premium] = {5}
+      ,[Order] = {6}
+      ,[Conversion] = {7}
+      ,[ModifiedDate] = '{8}'
+ WHERE [GradeId]={9} ", Grade.Price, Grade.Capacity, Grade.Facility, Grade.Equipment, Grade.Rating,
+            Grade.Premium, Grade.Order, Grade.Conversion, time.ToString(format), 1);
+        String prefix = "UPDATE [dbo].[Grades_2020] ";
         command = prefix + sb.ToString();
 
         return command;
@@ -5082,6 +5232,167 @@ where DATEDIFF(D, [FilterDate], GETDATE())  < 14 ";
 
         }
         return rating;
+    }
+
+    public int updateSpace(Space space)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("database"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+      
+        string format = "yyyy-MM-dd HH:mm:ss";
+        DateTime time = DateTime.Now;
+
+        // use a string builder to create the dynamic string
+        sb.AppendFormat(@"SET [SpaceName]='{0}' ,[Field]='{1}' ,[Price]={2},[City]='{3}',[Street]='{4}' " +
+            ",[Number]='{5}',[Capabillity]={6} ,[Bank]='{7}' ,[Branch]='{8}'  ,[Image1]='{9}'  ,[Image2]='{10}'," +
+            "[Image3]='{11}',[Image4]='{12}',[Image5]='{13}',[AccountNumber]='{14}',[FKEmail]='{15}'," +
+            "[Description]='{16}',[TermsOfUse]='{17}',[Rank]={18}, [UploadDate]='{19}',[Latitude]={20}, [Longitude]={21}" +
+            " Where [SpaceId]={22} ", space.Name, space.Field, space.Price, space.City, space.Street, space.Number, space.Capabillity,
+            space.Bank, space.Branch, space.Imageurl1, space.Imageurl2, space.Imageurl3, space.Imageurl4, space.Imageurl5, space.AccountNumber,
+            space.UserEmail, space.Description, space.TermsOfUse, space.Rank, time.ToString(format), space.Latitude, space.Longitude, space.Id);
+
+        String prefix = "UPDATE Spaces_2020 ";
+        command = prefix + sb.ToString();
+
+
+        String cStr = command;      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+
+
+    }
+
+    private String BuildDeleteEquipmentCommand(int spaceId)
+    {
+        String command;
+        command = "delete from Equipment_2020 where FKSpaceId=" + spaceId.ToString();
+        return command;
+    }
+
+    public int deleteEquipment(int spaceId)
+    {
+
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("database"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildDeleteEquipmentCommand(spaceId);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+
+    }
+    private String BuildDeleteWeekAvailabilitiesCommand(int spaceId)
+    {
+        String command;
+        command = "delete from WeekAvailablity_2020 where FkSpaceId=" + spaceId.ToString();
+        return command;
+    }
+
+    public int deleteWeekAvailabilities(int spaceId)
+    {
+
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("database"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildDeleteWeekAvailabilitiesCommand(spaceId);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+
     }
 }
 
