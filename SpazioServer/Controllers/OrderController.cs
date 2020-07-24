@@ -68,6 +68,16 @@ namespace SpazioServer.Controllers
         }
 
         // PUT api/<controller>/5
+
+        [HttpPut]
+        [Route("api/Order/updateStatus/{orderId}")]
+        public int PutOrderUpdate(int orderId)
+        {
+            Order o = new Order();
+            return o.updateOrderIsRated(orderId);
+
+        }
+
         public void Put(int id, [FromBody]string value)
         {
         }

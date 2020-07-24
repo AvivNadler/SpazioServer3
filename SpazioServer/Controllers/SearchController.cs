@@ -31,6 +31,18 @@ namespace SpazioServer.Controllers
             return search;
         }
 
+
+        [HttpGet]
+        [Route("api/Search/{userid}")]
+        public Dictionary<string, int> GetByUser(int userId)
+        {
+            Dictionary<string,int> Counter = new Dictionary<string, int>();
+            Search s = new Search();
+            Counter.Add("Counter", s.getUserSearches(userId));
+            return Counter;
+            
+        }
+
         // PUT api/<controller>/5
         public void Put(int id, [FromBody]string value)
         {

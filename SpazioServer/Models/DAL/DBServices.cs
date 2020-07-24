@@ -727,7 +727,16 @@ public class DBServices
         }
         try
         {
-            string selectSTR = "SELECT * FROM Spaces_2020";
+            string selectSTR = @"SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, 
+ Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank 
+ ,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits,Latitude,Longitude 
+ FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId  
+  left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId 
+
+  group by Spaces_2020.SpaceId,SpaceName,Field 
+                ,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate, 
+                Latitude,Longitude 
+				Order by Rank DESC, SpaceName ASC";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
             while (dr.Read())
@@ -753,6 +762,9 @@ public class DBServices
                 s.UserEmail = (string)dr["FKEmail"];
                 s.Description = (string)dr["Description"];
                 s.TermsOfUse = (string)dr["TermsOfUse"];
+
+                s.RankCount = Convert.ToInt32(dr["RankCount"]);  // this two rows added in the 24/07/2020 (in case there wil be some problems)
+                s.Visits = Convert.ToInt32(dr["Visits"]);
 
                 if (dr["Latitude"] == DBNull.Value)
                 { //in case there is not location
@@ -847,6 +859,10 @@ Order by UploadDate Desc;";
                 s.UserEmail = (string)dr["FKEmail"];
                 s.Description = (string)dr["Description"];
                 s.TermsOfUse = (string)dr["TermsOfUse"];
+
+                s.RankCount = Convert.ToInt32(dr["RankCount"]);  // this two rows added in the 24/07/2020 (in case there wil be some problems)
+                s.Visits = Convert.ToInt32(dr["Visits"]);
+
                 if (dr["Latitude"] == DBNull.Value)
                 { //in case there is not location
                     s.Latitude = 0;
@@ -946,6 +962,11 @@ Order by UploadDate Desc;";
                 s.UserEmail = (string)dr["FKEmail"];
                 s.Description = (string)dr["Description"];
                 s.TermsOfUse = (string)dr["TermsOfUse"];
+
+                s.RankCount = Convert.ToInt32(dr["RankCount"]);  // this two rows added in the 24/07/2020 (in case there wil be some problems)
+                s.Visits = Convert.ToInt32(dr["Visits"]);
+
+
                 if (dr["Latitude"] == DBNull.Value)
                 { //in case there is not location
                     s.Latitude = 0;
@@ -1053,6 +1074,11 @@ FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.
                 s.UserEmail = (string)dr["FKEmail"];
                 s.Description = (string)dr["Description"];
                 s.TermsOfUse = (string)dr["TermsOfUse"];
+
+                s.RankCount = Convert.ToInt32(dr["RankCount"]);  // this two rows added in the 24/07/2020 (in case there wil be some problems)
+                s.Visits = Convert.ToInt32(dr["Visits"]);
+
+
                 if (dr["Latitude"] == DBNull.Value)
                 { //in case there is not location
                     s.Latitude = 0;
@@ -1151,6 +1177,18 @@ FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.
                 s.UserEmail = (string)dr["FKEmail"];
                 s.Description = (string)dr["Description"];
                 s.TermsOfUse = (string)dr["TermsOfUse"];
+
+                s.RankCount = Convert.ToInt32(dr["RankCount"]);  // this two rows added in the 24/07/2020 (in case there wil be some problems)
+                s.Visits = Convert.ToInt32(dr["Visits"]);
+
+                if (dr["Latitude"] == DBNull.Value)
+                { //in case there is not location
+                    s.Latitude = 0;
+                }
+                else
+                {
+                    s.Latitude = Convert.ToDouble(dr["Latitude"]);
+                }
 
                 if (dr["Latitude"] == DBNull.Value)
                 { //in case there is not location
@@ -2333,7 +2371,9 @@ FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.
         }
         try
         {
-            string selectSTR = "SELECT * FROM Orders_2020";
+            string selectSTR = @"select * 
+ from Orders_2020
+ Where  DATEDIFF(D, [ReservationDate], GETDATE())  < 14";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
             SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
             while (dr.Read())
@@ -2349,6 +2389,15 @@ FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.
                 o.EndHour = (string)dr["EndHour"];
                 o.Price = Convert.ToDouble(dr["Price"]);
                 o.OrderDate = dr["OrderDate"].ToString();
+
+                if (dr["IsRated"] == DBNull.Value)
+                { //in case there is not location
+                    o.IsRated = false;
+                }
+                else
+                {
+                    o.IsRated = Convert.ToBoolean(dr["IsRated"]); ;
+                }
 
 
                 orders.Add(o);
@@ -2944,6 +2993,10 @@ Order by UploadDate Desc;";
                 s.UserEmail = (string)dr["FKEmail"];
                 s.Description = (string)dr["Description"];
                 s.TermsOfUse = (string)dr["TermsOfUse"];
+
+                s.RankCount = Convert.ToInt32(dr["RankCount"]);  // this two rows added in the 24/07/2020 (in case there wil be some problems)
+                s.Visits = Convert.ToInt32(dr["Visits"]);
+
                 if (dr["Latitude"] == DBNull.Value)
                 { //in case there is not location
                     s.Latitude = 0;
@@ -5393,6 +5446,252 @@ where DATEDIFF(D, [FilterDate], GETDATE())  < 14 ";
             }
         }
 
+    }
+
+    public Search readLastSearchOfUser(int userId)
+    {
+        List<Search> list = new List<Search>();
+        SqlConnection con = null;
+
+        Search s = new Search();
+
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        try
+        {
+
+            StringBuilder sb = new StringBuilder();
+
+            // use a string builder to create the dynamic string
+            string selectSTR = @"SELECT TOP 1 * FROM Searches_2020
+Where FkUserId="+ userId.ToString() + "Order by SearchDate Desc";
+
+
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+
+                s.Id = Convert.ToInt32(dr["SearchId"]);
+                s.Field = (string)dr["Field"];
+                s.Location = (string)dr["Location"];
+                s.Time = (string)dr["Time"];
+                s.City = (string)dr["City"];
+                s.Street = (string)dr["Street"];
+                s.Number = (string)dr["Number"];
+                s.InputDate = dr["InputDate"].ToString().Split(' ')[0];
+                s.SearchDate = dr["SearchDate"].ToString();
+                s.UserId = Convert.ToInt32(dr["FkUserId"]);
+
+
+            }
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+        return s;
+    }
+
+    public List<Space> readLastFiveSpacesByField(string field)
+    {
+        List<Space> Spaces = new List<Space>();
+        SqlConnection con = null;
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        try
+        {
+            string selectSTR = @"SELECT Top 5 Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1, 
+ Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank 
+ ,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits,Latitude,Longitude 
+ FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId  
+  left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId 
+    WHERE Field like '" + field + @"'
+
+  group by Spaces_2020.SpaceId,SpaceName,Field 
+                ,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate, 
+                Latitude,Longitude 
+				Order by UploadDate DESC";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                Space s = new Space();
+
+                s.Id = Convert.ToInt32(dr["SpaceId"]);
+                s.Name = (string)dr["SpaceName"];
+                s.Field = (string)dr["Field"];
+                s.Price = Convert.ToDouble(dr["Price"]);
+                s.City = (string)dr["City"];
+                s.Street = (string)dr["Street"];
+                s.Number = (string)dr["Number"];
+                s.Capabillity = Convert.ToInt32(dr["Capabillity"]);
+                s.Bank = (string)dr["Bank"];
+                s.Branch = (string)dr["Branch"];
+                s.AccountNumber = (string)dr["AccountNumber"];
+                s.Imageurl1 = (string)dr["Image1"];
+                s.Imageurl2 = (string)dr["Image2"];
+                s.Imageurl3 = (string)dr["Image3"];
+                s.Imageurl4 = (string)dr["Image4"];
+                s.Imageurl5 = (string)dr["Image5"];
+                s.UserEmail = (string)dr["FKEmail"];
+                s.Description = (string)dr["Description"];
+                s.TermsOfUse = (string)dr["TermsOfUse"];
+
+                s.RankCount = Convert.ToInt32(dr["RankCount"]);  // this two rows added in the 24/07/2020 (in case there wil be some problems)
+                s.Visits = Convert.ToInt32(dr["Visits"]);
+
+                if (dr["Latitude"] == DBNull.Value)
+                { //in case there is not location
+                    s.Latitude = 0;
+                }
+                else
+                {
+                    s.Latitude = Convert.ToDouble(dr["Latitude"]);
+                }
+                if (dr["Longitude"] == DBNull.Value)
+                { //in case there is not location
+                    s.Longitude = 0;
+                }
+                else
+                {
+                    s.Longitude = Convert.ToDouble(dr["Longitude"]);
+                }
+
+
+                if (dr["Rank"] == DBNull.Value)
+                { //in case there is not ratings to space yet
+                    s.Rank = 3.499;
+                }
+                else
+                {
+                    s.Rank = Convert.ToDouble(dr["Rank"]);
+                }
+                s.Uploadtime = dr["UploadDate"].ToString();
+
+                Spaces.Add(s);
+            }
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+        return Spaces;
+    }
+
+    
+        public int updateOrderRated(int orderId)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+
+        String command;
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("SET IsRated = '{0}' WHERE OrderId={1} ;" , "True", orderId.ToString());
+        String prefix = "UPDATE [dbo].[Orders_2020] ";
+        command = prefix + sb.ToString();
+
+        // cmd = CreatCommmand(cStr, con);
+        cmd = CreateCommand(command, con);
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery();
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            return 0;
+            // write to log
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+                con.Close();
+        }
+    }
+    public int countUserSearches(int userId)
+    {
+        int counter=0 ;
+        SqlConnection con = null;
+        try
+        {
+            con = connect("database");
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+        try
+        {
+            string selectSTR = @"SELECT Count(*) as NumberOfSearches 
+FROM[dbo].[Searches_2020]
+where FkUserId = " +  userId.ToString();
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+
+                counter = Convert.ToInt32(dr["NumberOfSearches"]);
+
+            }
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+        return counter;
     }
 }
 

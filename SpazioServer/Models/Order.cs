@@ -15,8 +15,9 @@ namespace SpazioServer.Models
         string endHour;
         double price;
         string orderDate;
+        bool isRated;
 
-        public Order(int orderId, int spaceId, int userId, string reservationDate, string startHour, string endHour, string orderDate, double price)
+        public Order(int orderId, int spaceId, int userId, string reservationDate, string startHour, string endHour, string orderDate, double price, bool isRated)
         {
             this.orderId = orderId;
             this.spaceId = spaceId;
@@ -26,6 +27,7 @@ namespace SpazioServer.Models
             this.endHour = endHour;
             this.orderDate = orderDate;
             this.price = price;
+            this.isRated = isRated;
         }
         public Order() { }
 
@@ -37,6 +39,7 @@ namespace SpazioServer.Models
         public string EndHour { get => endHour; set => endHour = value; }
         public string OrderDate { get => orderDate; set => orderDate = value; }
         public double Price { get => price; set => price = value; }
+        public bool IsRated { get => isRated; set => isRated = value; }
 
         public List<Order> getOrders()
         {
@@ -63,6 +66,15 @@ namespace SpazioServer.Models
         {
             DBServices dbs = new DBServices();
             return dbs.readOrder(id);
+        }
+
+
+
+        public int updateOrderIsRated(int orderId)
+        {
+            DBServices dbs = new DBServices();
+            int numAffected = dbs.updateOrderRated(orderId);
+            return numAffected;
         }
 
 /*        public Order updateOrder(int id)

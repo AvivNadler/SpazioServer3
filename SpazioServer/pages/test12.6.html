@@ -651,7 +651,7 @@
        // ajaxCall("GET", "../api/SpaceData/?userEmail=" + userEmail, "", getSuccessMySpaces, getErrorCB);
 
 
-       // ajaxCall("GET", "../api/SpaceData/?" + emptyquerystring3, "", getSuccessSearch, getErrorCB);
+        ajaxCall("GET", "../api/SpaceData/?" + emptyquerystring3, "", getSuccessSearch, getErrorCB);
 
 
         function getSuccessMySpaces(data) {
@@ -791,13 +791,46 @@
             }]
         };
 
-                ajaxCall("PUT", "../api/spacedata/update/", JSON.stringify(spacedata22) , getSuccessEditSpaceData, getErrorCB);
+                //ajaxCall("PUT", "../api/spacedata/update/", JSON.stringify(spacedata22) , getSuccessEditSpaceData, getErrorCB);
 
          function getSuccessEditSpaceData(data) {
             console.log("Edit Space Data Success", data);
         }
         
+                ajaxCall("GET", "../api/Order/", "", getSuccessSearch, getErrorCB);
 
+        function getSuccessOrders(data) {
+            console.log("Orders", data);
+        }
+
+
+
+
+
+        var userIdSearchesCounter = 193;
+
+          ajaxCall("GET", "../api/Search/" + userIdSearchesCounter, "", getSuccessSearchesByUser, getErrorCB); //from querystring
+
+        function getSuccessSearchesByUser(data) {
+            console.log("Searches By User", data);
+        }
+
+
+        var orderId = 6;
+
+            //ajaxCall("PUT", "../api/Order/updateStatus/" + orderId, "", getSuccessOrderUpdate, getErrorCB);//from querystring
+
+        function getSuccessOrderUpdate(data) {
+            console.log("Order Update IsRated Column ", data);
+        }
+
+
+         ajaxCall("GET", "../api/SpaceData/LastAddedByField/45444", "", getSuccessLastAddedByField, getErrorCB);//from querystring
+
+        function getSuccessLastAddedByField(data) {
+            console.log("Last Added By Field ", data);
+        }
+        
 
     </script>
 </head>

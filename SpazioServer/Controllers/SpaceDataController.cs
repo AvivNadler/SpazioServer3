@@ -969,7 +969,6 @@ namespace SpazioServer.Controllers
 
         [HttpGet]
         [Route("api/SpaceData/AllSpaces")]
-
         public List<SpaceData> Get2()
         {
             List<SpaceData> list = new List<SpaceData>();
@@ -1154,6 +1153,12 @@ namespace SpazioServer.Controllers
             return spaceData;
         }
 
+
+
+
+
+
+
         // POST api/<controller>
         [HttpPut]
         [Route("api/SpaceData/Update/")]
@@ -1194,7 +1199,7 @@ namespace SpazioServer.Controllers
             }
             foreach (WeekAvailability item in wa)
             {
-                item.FkSpaceId = s.Id; 
+                item.FkSpaceId = s.Id;
                 countertest += dbs.insert(item);
 
             }
@@ -1208,6 +1213,111 @@ namespace SpazioServer.Controllers
 
             return spaceData;
         }
+
+
+
+        [HttpGet]
+        [Route("api/SpaceData/LastAddedByField/{userId}")]
+        public List<SpaceData> GetLastAddedSpacesForUser(int userId)
+        {
+
+
+            List<SpaceData> list = new List<SpaceData>();
+            DBServices dbs = new DBServices();
+
+            if (userId == 369)
+            {
+                foreach (Space item in dbs.readLastAddedSpaces())
+                {
+
+                    SpaceData s = new SpaceData();
+                    s.Space = item;
+                    //s.Realavailability = dbs.readAllAvailbilities(s.Space.Id, date);
+                    s.Facility = dbs.readFacilities(s.Space.Id);
+                    s.Equipment = dbs.readEquipments(s.Space.Id).ToArray();
+                    //s.Orders = dbs.readOrdersOfSpace(s.Space.Id);
+                    s.WeekAvailabilities = dbs.readWeekAvailbilitiesById(s.Space.Id);
+
+                    //List<string> tempAvail = new List<string>();
+                    //foreach (string item2 in dbs.readAllAvailbilities(s.Space.Id, date))
+                    //{
+                    //    tempAvail.Add(item2.Split('-')[0].Split(':')[0] + ":" + item2.Split('-')[0].Split(':')[1] + "-" + item2.Split('-')[1].Split(':')[0] + ":" + item2.Split('-')[1].Split(':')[1]);
+                    //}
+                    //s.Realavailability = tempAvail;
+
+                    list.Add(s);
+
+
+
+                }
+                return list;
+
+            }
+            else
+            {
+                Search s = new Search();
+
+                if (s.getUserSearches(userId) == 0)
+                {
+                    foreach (Space item in dbs.readLastAddedSpaces())
+                    {
+
+                        SpaceData spaceData2 = new SpaceData();
+                        spaceData2.Space = item;
+                        //s.Realavailability = dbs.readAllAvailbilities(s.Space.Id, date);
+                        spaceData2.Facility = dbs.readFacilities(spaceData2.Space.Id);
+                        spaceData2.Equipment = dbs.readEquipments(spaceData2.Space.Id).ToArray();
+                        //s.Orders = dbs.readOrdersOfSpace(s.Space.Id);
+                        spaceData2.WeekAvailabilities = dbs.readWeekAvailbilitiesById(spaceData2.Space.Id);
+
+                        //List<string> tempAvail = new List<string>();
+                        //foreach (string item2 in dbs.readAllAvailbilities(s.Space.Id, date))
+                        //{
+                        //    tempAvail.Add(item2.Split('-')[0].Split(':')[0] + ":" + item2.Split('-')[0].Split(':')[1] + "-" + item2.Split('-')[1].Split(':')[0] + ":" + item2.Split('-')[1].Split(':')[1]);
+                        //}
+                        //s.Realavailability = tempAvail;
+
+                        list.Add(spaceData2);
+
+
+
+                    }
+                    return list;
+
+                }
+                else
+                {
+
+
+                    Search userLastSearch = dbs.readLastSearchOfUser(userId);
+
+                    string field = userLastSearch.Field;
+
+                    foreach (Space item in dbs.readLastFiveSpacesByField(field))
+                    {
+
+                        SpaceData spaceData = new SpaceData();
+                        spaceData.Space = item;
+                        //s.Realavailability = dbs.readAllAvailbilities(s.Space.Id, date);
+                        spaceData.Facility = dbs.readFacilities(spaceData.Space.Id);
+                        spaceData.Equipment = dbs.readEquipments(spaceData.Space.Id).ToArray();
+                        //s.Orders = dbs.readOrdersOfSpace(s.Space.Id);
+                        spaceData.WeekAvailabilities = dbs.readWeekAvailbilitiesById(spaceData.Space.Id);
+
+                        //List<string> tempAvail = new List<string>();
+                        //foreach (string item2 in dbs.readAllAvailbilities(s.Space.Id, date))
+                        //{
+                        //    tempAvail.Add(item2.Split('-')[0].Split(':')[0] + ":" + item2.Split('-')[0].Split(':')[1] + "-" + item2.Split('-')[1].Split(':')[0] + ":" + item2.Split('-')[1].Split(':')[1]);
+                        //}
+                        //s.Realavailability = tempAvail;
+
+                        list.Add(spaceData);
+                    }
+                }
+                return list;
+            }
+        }
+
 
         // PUT api/<controller>/5
         public void Put(int id, [FromBody]string value)

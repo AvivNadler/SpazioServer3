@@ -57,5 +57,13 @@ namespace SpazioServer.Models
             int numAffected = dbs.insert(this);
             return numAffected;
         }
+
+        public int getUserSearches(int userId)
+        {
+            DBServices dbs = new DBServices();
+            return dbs.countUserSearches(userId);
+
+
+        }
     }
 }
