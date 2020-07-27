@@ -1016,8 +1016,25 @@ Order by UploadDate Desc;";
     {
         string temp = field;
         if (temp == "" || temp == null)
-            temp = "_%";
+            temp = "'_%'";
+        else
+        {
+            temp = "'" + temp + "'";
+        }
         return temp;
+    }
+
+    private string isContain(string field)
+    {
+        string temp = field;
+        if (temp == "" || temp == null)
+            temp = "'_%'";
+        else
+        {
+            temp = "'%" + temp + "%'";
+        }
+        return temp;
+
     }
 
     public Space readSpaceById(int id)
@@ -1141,15 +1158,50 @@ FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.
             StringBuilder sb = new StringBuilder();
             // use a string builder to create the dynamic string
             string command;
-            sb.AppendFormat("WHERE Field like '{0}' and City like '{1}' and  Street like '{2}'  and  Number like '{3}'  group by Spaces_2020.SpaceId,SpaceName,Field" +
-                ",Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate," +
-                "Latitude,Longitude Order by Rank DESC, SpaceName ASC", isEmpty(field), isEmpty(city), isEmpty(street), isEmpty(number));
-            String prefix = "SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1," +
-                " Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank" +
-                ",COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits,Latitude,Longitude" +
-                " FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId " +
-                "left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId ";
-            command = prefix + sb.ToString();
+            //        sb.AppendFormat(@"WHERE Field like '_%' and City like '%{1}%'   and 
+            //'%{2}%' like '%' + Street	+ '%' and   Number like '{3}'    group by Spaces_2020.SpaceId,SpaceName,Field" +
+            //            ",Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate," +
+            //            "Latitude,Longitude Order by Rank DESC, SpaceName ASC", isEmpty(field), isEmpty(city), isEmpty(street), isEmpty(number));
+            //String prefix = @"SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1,
+            //     Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank 
+            //    ,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits,Latitude,Longitude 
+            //     FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId  
+            //    left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId
+            //    WHERE Field like " + isEmpty(field) + " and City like " + isContain(city)
+            //    + " and '%" + isContain(street) + "%'  like '%' + Street+ '%' and  Number like " + isEmpty(number) +  @" group by Spaces_2020.SpaceId,SpaceName,Field
+            //    ,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate,
+            //    Latitude,Longitude Order by Rank DESC, SpaceName ASC;";
+
+
+            string whereStr = ""; 
+            if (city==null && street==null && number==null)
+            {
+                whereStr+= " where field like '" + field + "' ";
+            }
+            else if (city != null && street == null && number==null)
+            {
+                whereStr += " where field like '" + field + "' and City like '%" + city + "%' " ;
+            }
+            else if(city != null && street != null && number==null)
+            {
+                whereStr += " where field like '" + field + "' and City like '%" + city + "%' and '%" + street + "%' like '%' + Street + '%' ";
+            }
+            else
+            {
+                whereStr += " where field like '" + field + "' and City like '%" + city + "%' and '%" + street + "%' like '%' + Street + '%' and number like '" + number + "' ";
+
+            }
+            string prefix = @"SELECT Spaces_2020.SpaceId, SpaceName, Field, Price, City, Street, Number, Capabillity, Bank, Branch, AccountNumber, Image1,
+                 Image2, Image3, Image4, Image5, FKEmail, Description, TermsOfUse, UploadDate, AVG(Ratings_2020.TotalRating) as Rank 
+                ,COUNT(Distinct Ratings_2020.Id) as RankCount ,COUNT(Distinct SpaceVisits_2020.Id) as Visits,Latitude,Longitude 
+                FROM Spaces_2020 left JOIN Ratings_2020 ON Ratings_2020.FKSpaceId = Spaces_2020.SpaceId  
+                left JOIN SpaceVisits_2020 ON SpaceVisits_2020.SpaceId = Spaces_2020.SpaceId " +
+                whereStr
+                + @" group by Spaces_2020.SpaceId,SpaceName,Field
+                ,Price,City,Street,Number,Capabillity,Bank,Branch,AccountNumber,Image1,Image2,Image3,Image4,Image5,FKEmail,Description,TermsOfUse,UploadDate,
+                Latitude,Longitude Order by Rank DESC, SpaceName ASC;";
+
+            command = prefix ;
 
             string selectSTR = command;
             SqlCommand cmd = new SqlCommand(selectSTR, con);

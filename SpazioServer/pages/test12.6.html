@@ -251,7 +251,7 @@
 
         var querystring3 = "field=" + field + "&city=" + city + "&street=" + street + "&number=" + number + "&date=" + date;
 
-        var emptyquerystring3 = "field=&city=&street=&number=&date=" + date;
+        var emptyquerystring3 = "field=Sport&city=Netanya&street=David%20Hamelech&number=&date=" + date;
 
         var userId = 193;
 
@@ -797,7 +797,7 @@
             console.log("Edit Space Data Success", data);
         }
         
-                ajaxCall("GET", "../api/Order/", "", getSuccessSearch, getErrorCB);
+              //  ajaxCall("GET", "../api/Order/", "", getSuccessOrders, getErrorCB);
 
         function getSuccessOrders(data) {
             console.log("Orders", data);
